@@ -105,8 +105,8 @@ class TestDatabaseConfiguration:
         from app.core.database import SessionLocal
         
         # Check configuration - these should be False for typical web apps
-        assert SessionLocal.autocommit is False
-        assert SessionLocal.autoflush is False
+        assert SessionLocal().autocommit is False
+        assert SessionLocal().autoflush is False
 
 
 class TestDatabaseIntegration:
