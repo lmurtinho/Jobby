@@ -58,11 +58,7 @@ def create_application() -> FastAPI:
     # Configure CORS middleware for frontend integration
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=[
-            "http://localhost:3000",  # React development server
-            "http://localhost:8000",  # FastAPI development server  
-            "https://jobby-frontend.vercel.app",  # Production frontend (example)
-        ],
+        allow_origins=os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000").split(","),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
