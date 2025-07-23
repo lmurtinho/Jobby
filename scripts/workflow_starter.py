@@ -30,6 +30,7 @@ from pathlib import Path
 from typing import List, Dict, Any, Optional
 from dataclasses import dataclass
 from datetime import datetime
+from dotenv import load_dotenv
 
 
 @dataclass
@@ -593,6 +594,9 @@ def main():
     parser.add_argument("--create-structure", action="store_true", help="Create initial project structure")
     
     args = parser.parse_args()
+    
+    # Load environment variables from .env file
+    load_dotenv()
     
     # Get GitHub token from environment if not provided
     github_token = args.github_token or os.getenv("GITHUB_TOKEN")
