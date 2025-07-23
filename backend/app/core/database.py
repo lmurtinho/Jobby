@@ -22,26 +22,8 @@ engine = create_engine(
 )
 
 
-class SessionFactory:
-    """Custom session factory wrapper to expose configuration attributes."""
-    
-    def __init__(self, autocommit=False, autoflush=False, bind=None):
-        self._sessionmaker = sessionmaker(
-            autocommit=autocommit, 
-            autoflush=autoflush, 
-            bind=bind
-        )
-        self.autocommit = autocommit
-        self.autoflush = autoflush
-        self.bind = bind
-    
-    def __call__(self):
-        """Create a new session."""
-        return self._sessionmaker()
-
-
 # Session factory
-SessionLocal = SessionFactory(autocommit=False, autoflush=False, bind=engine)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base class for models
 Base = declarative_base()
