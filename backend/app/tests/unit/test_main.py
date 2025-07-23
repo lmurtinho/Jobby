@@ -55,7 +55,6 @@ class TestMainApplication:
     def test_app_cors_configuration(self):
         """Test that app has CORS properly configured for frontend."""
         from app.main import app
-        from fastapi.testclient import TestClient
         
         # Test CORS functionality by making a preflight request
         client = TestClient(app)
