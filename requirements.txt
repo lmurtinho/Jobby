@@ -1,0 +1,38 @@
+# AI Job Tracker - Root Requirements
+# This file contains the minimum packages needed to run the workflow and basic development
+# For full backend dependencies, see backend/requirements.txt
+
+# ================================
+# CORE WEB FRAMEWORK
+# ================================
+fastapi>=0.116.0
+uvicorn[standard]>=0.35.0
+httpx>=0.28.0  # For testing FastAPI endpoints
+
+# ================================
+# DATABASE & DATA VALIDATION  
+# ================================
+sqlalchemy>=2.0.0
+pydantic>=2.11.0
+python-multipart>=0.0.20  # For file uploads
+
+# ================================
+# DEVELOPMENT & TESTING
+# ================================
+pytest>=8.4.0
+pytest-cov>=6.2.0
+black>=25.1.0
+flake8>=7.3.0
+mypy>=1.17.0
+
+# ================================
+# UTILITIES
+# ================================
+requests>=2.32.0  # For GitHub API and HTTP requests
+python-dotenv>=1.1.0  # For environment variables
+
+# ================================
+# WORKFLOW AUTOMATION
+# ================================
+# All packages above are needed for the Outside-In TDD workflow starter
+# Additional dependencies will be installed as components are implemented

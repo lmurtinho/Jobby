@@ -74,11 +74,14 @@ class WorkflowStarter:
         print("🧪 Running high-level integration test to capture failures...")
         
         try:
+            # Ensure we're running from the project root
+            project_root = Path.cwd().parent if Path.cwd().name == "scripts" else Path.cwd()
+            
             result = subprocess.run([
                 "python", "-m", "pytest", 
                 "backend/app/tests/integration/test_complete_workflow.py::TestCompleteJobTrackingWorkflow::test_complete_ai_job_tracker_workflow",
                 "-v", "--tb=short", "--no-header"
-            ], capture_output=True, text=True, cwd=Path.cwd())
+            ], capture_output=True, text=True, cwd=project_root)
             
             output = result.stdout + result.stderr
             print(f"✅ Test execution completed (exit code: {result.returncode})")
