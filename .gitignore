@@ -326,7 +326,7 @@ data/raw/
 data/processed/
 data/interim/
 *.csv
-*.json
+data/*.json
 *.parquet
 
 # Scraped data and temporary files
