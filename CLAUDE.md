@@ -106,7 +106,547 @@ npm run lint               # ESLint checking
 npm run typecheck          # TypeScript checking
 ```
 
-## 🔄 Development Workflow: Issue-Driven + Test-Driven Development
+## 🚀 MVP Development Roadmap
+
+### MVP Philosophy
+Build **clean foundation quickly** → enhance iteratively. Avoid shortcuts that create technical debt, but start with simpler implementations that can be improved.
+
+### 5-Day MVP Sprint Plan
+
+#### Day 1: Foundation & Setup (8 hours)
+**Morning (4 hours): Backend Foundation**
+```bash
+# Proper FastAPI structure (no shortcuts)
+mkdir backend && cd backend
+python -m venv venv && source venv/bin/activate
+pip install fastapi uvicorn sqlalchemy psycopg2-binary alembic pydantic
+
+# Create proper project structure
+mkdir -p app/models app/schemas app/api/v1/endpoints app/core
+touch app/main.py app/core/config.py app/core/database.py
+
+# Database setup with proper migrations
+alembic init alembic
+# Create User, Job, JobMatch models with proper relationships
+
+# Deploy to Railway immediately
+railway new job-tracker-mvp
+railway add postgresql
+railway up
+```
+
+**Afternoon (4 hours): Frontend Foundation**
+```bash
+# React setup with proper TypeScript structure
+npx create-react-app frontend --template typescript
+cd frontend && npm install tailwindcss @types/react-router-dom
+
+# Create proper component structure
+mkdir -p src/components src/pages src/utils src/types
+# Basic routing, authentication context, API client setup
+
+# Deploy to Vercel immediately
+vercel --prod
+```
+
+**End of Day 1 Deliverables:**
+- ✅ Working authentication (register/login)
+- ✅ Database with proper schema
+- ✅ Deployed backend + frontend
+- ✅ Basic routing and protected pages
+
+#### Day 2: Core Job Features (8 hours)
+**Morning (4 hours): Job Data Layer**
+```python
+# Create job data in separate, easily replaceable module
+# backend/app/data/sample_jobs.py
+SAMPLE_JOBS = [
+    {
+        "id": 1,
+        "title": "Senior Data Scientist - Remote LATAM",
+        "company": "TechCorp International",
+        "location": "Remote (Brazil timezone)", 
+        "salary": "$12,000 - $18,000 USD/month",
+        "description": "Join our AI team building ML solutions for global markets...",
+        "requirements": ["Python", "Machine Learning", "SQL", "TensorFlow", "AWS"],
+        "posted_date": "2024-01-15",
+        "apply_url": "https://techcorp.com/careers/senior-data-scientist",
+        "source": "LinkedIn",
+        "remote": True
+    },
+    # Add 49 more REAL job postings from manual research
+]
+
+# Proper service layer for easy replacement later
+# backend/app/services/job_service.py
+class JobService:
+    def get_jobs(self) -> List[Job]:
+        # Currently returns sample data, will be replaced with scraping
+        return [Job(**job_data) for job_data in SAMPLE_JOBS]
+    
+    def search_jobs(self, query: str, skills: List[str]) -> List[Job]:
+        # Simple filtering now, ML-powered later
+        jobs = self.get_jobs()
+        return [job for job in jobs if any(skill in job.requirements for skill in skills)]
+```
+
+**Afternoon (4 hours): Job Display & Basic Matching**
+```typescript
+// Frontend job components with proper structure
+// frontend/src/components/JobCard.tsx
+interface JobCardProps {
+  job: Job;
+  userSkills: string[];
+  onSave: (jobId: string) => void;
+  onApply: (job: Job) => void;
+}
+
+// Simple but proper matching algorithm (easily enhanced later)
+// frontend/src/utils/jobMatching.ts
+export const calculateMatchScore = (jobSkills: string[], userSkills: string[]): number => {
+  // Simple keyword matching now, will be replaced with ML
+  const matches = jobSkills.filter(skill => 
+    userSkills.some(userSkill => 
+      skill.toLowerCase().includes(userSkill.toLowerCase())
+    )
+  );
+  return Math.round((matches.length / jobSkills.length) * 100);
+};
+```
+
+**End of Day 2 Deliverables:**
+- ✅ 50 real job listings displayed
+- ✅ Basic search and filtering
+- ✅ Simple match score calculation
+- ✅ Save/unsave job functionality
+
+#### Day 3: Resume Processing (8 hours)
+**Morning (4 hours): Resume Upload & Text Extraction**
+```python
+# Simple but extensible resume processing
+# backend/app/services/resume_service.py
+from PyPDF2 import PdfReader
+from typing import Dict, List
+
+class ResumeService:
+    def process_resume(self, file_content: bytes, filename: str) -> Dict:
+        # Extract text (will be enhanced with Claude API later)
+        text = self.extract_text_from_pdf(file_content)
+        
+        # Simple skill extraction (will be replaced with NLP)
+        skills = self.extract_skills_simple(text)
+        
+        # Basic info extraction (will be enhanced with AI)
+        profile_info = self.extract_basic_info(text)
+        
+        return {
+            "skills": skills,
+            "experience_level": profile_info.get("experience_level", "mid"),
+            "name": profile_info.get("name", ""),
+            "raw_text": text[:500]  # Store sample for debugging
+        }
+    
+    def extract_skills_simple(self, text: str) -> List[str]:
+        # Simple keyword matching (easily replaceable)
+        skill_keywords = [
+            "Python", "R", "SQL", "Machine Learning", "TensorFlow", 
+            "PyTorch", "AWS", "GCP", "Docker", "Kubernetes"
+        ]
+        found_skills = []
+        text_lower = text.lower()
+        
+        for skill in skill_keywords:
+            if skill.lower() in text_lower:
+                found_skills.append(skill)
+        
+        return found_skills
+```
+
+**Afternoon (4 hours): Profile Management**
+```typescript
+// Frontend profile and resume upload
+// frontend/src/pages/Profile.tsx
+const Profile: React.FC = () => {
+  const [resumeData, setResumeData] = useState<ResumeData | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const handleResumeUpload = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('resume', file);
+      
+      const response = await apiClient.post('/users/resume', formData);
+      setResumeData(response.data);
+      
+      // Update user skills for job matching
+      await updateUserSkills(response.data.skills);
+    } catch (error) {
+      console.error('Resume upload failed:', error);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+  
+  // Simple but complete profile management
+};
+```
+
+**End of Day 3 Deliverables:**
+- ✅ Resume upload working (PDF support)
+- ✅ Basic skill extraction from resume
+- ✅ User profile with extracted skills
+- ✅ Job matching uses user skills
+
+#### Day 4: AI Enhancement (8 hours)
+**Morning (4 hours): Claude API Integration**
+```python
+# Replace simple extraction with Claude API
+# backend/app/services/claude_service.py
+import anthropic
+from typing import Dict
+
+class ClaudeResumeParser:
+    def __init__(self):
+        self.client = anthropic.Anthropic()
+    
+    async def parse_resume(self, resume_text: str) -> Dict:
+        prompt = f"""
+        Analyze this resume and extract information in JSON format:
+        
+        {{
+          "name": "candidate name",
+          "experience_level": "junior|mid|senior|lead",
+          "skills": ["Python", "Machine Learning", "SQL"],
+          "location": "city, country",
+          "summary": "2-sentence professional summary"
+        }}
+        
+        Resume text: {resume_text}
+        
+        Return only valid JSON, no other text.
+        """
+        
+        response = await self.client.messages.create(
+            model="claude-3-sonnet-20240229",
+            max_tokens=1000,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        
+        return json.loads(response.content[0].text)
+
+# Update ResumeService to use Claude
+# backend/app/services/resume_service.py (enhanced)
+class ResumeService:
+    def __init__(self):
+        self.claude_parser = ClaudeResumeParser()
+        self.simple_parser = SimpleResumeParser()  # Keep as fallback
+    
+    async def process_resume(self, file_content: bytes, filename: str) -> Dict:
+        text = self.extract_text_from_pdf(file_content)
+        
+        try:
+            # Try Claude API first
+            result = await self.claude_parser.parse_resume(text)
+            result["parsing_method"] = "claude_api"
+        except Exception as e:
+            # Fallback to simple parsing
+            logger.warning(f"Claude API failed, using fallback: {e}")
+            result = self.simple_parser.parse_resume(text)
+            result["parsing_method"] = "simple_fallback"
+        
+        return result
+```
+
+**Afternoon (4 hours): Enhanced Matching**
+```python
+# Improve matching algorithm while keeping it simple
+# backend/app/services/matching_service.py
+class MatchingService:
+    def calculate_match_score(self, user_profile: Dict, job: Dict) -> int:
+        # Enhanced but still simple algorithm
+        
+        # Skills matching (60% weight)
+        user_skills = [skill.lower() for skill in user_profile.get("skills", [])]
+        job_skills = [skill.lower() for skill in job.get("requirements", [])]
+        
+        skill_matches = len(set(user_skills) & set(job_skills))
+        skill_score = (skill_matches / max(len(job_skills), 1)) * 100
+        
+        # Experience level matching (25% weight)
+        exp_mapping = {"junior": 1, "mid": 2, "senior": 3, "lead": 4}
+        user_exp = exp_mapping.get(user_profile.get("experience_level", "mid"), 2)
+        job_exp = exp_mapping.get(job.get("seniority_level", "mid"), 2)
+        exp_score = max(0, 100 - abs(user_exp - job_exp) * 25)
+        
+        # Location matching (15% weight)
+        location_score = 100 if job.get("remote") else 70
+        
+        # Calculate weighted average
+        total_score = (skill_score * 0.6) + (exp_score * 0.25) + (location_score * 0.15)
+        
+        return min(100, max(0, int(total_score)))
+```
+
+**End of Day 4 Deliverables:**
+- ✅ AI-powered resume parsing with Claude API
+- ✅ Enhanced job matching algorithm
+- ✅ Fallback systems for reliability
+- ✅ Improved match score accuracy
+
+#### Day 5: Polish & Launch (8 hours)
+**Morning (4 hours): UX Improvements**
+```typescript
+// Enhanced dashboard with statistics
+// frontend/src/pages/Dashboard.tsx
+const Dashboard: React.FC = () => {
+  const { jobs, loading } = useJobs();
+  const { user } = useAuth();
+  const userSkills = user?.skills || [];
+  
+  const matchedJobs = jobs.filter(job => 
+    calculateMatchScore(job.requirements, userSkills) >= 70
+  );
+  
+  const stats = {
+    totalJobs: jobs.length,
+    highMatches: jobs.filter(job => 
+      calculateMatchScore(job.requirements, userSkills) >= 80
+    ).length,
+    savedJobs: user?.savedJobs?.length || 0,
+    averageMatch: Math.round(
+      jobs.reduce((acc, job) => 
+        acc + calculateMatchScore(job.requirements, userSkills), 0
+      ) / jobs.length
+    )
+  };
+  
+  return (
+    <div className="space-y-6">
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard title="Total Jobs" value={stats.totalJobs} />
+        <StatCard title="High Matches" value={stats.highMatches} />
+        <StatCard title="Saved Jobs" value={stats.savedJobs} />
+        <StatCard title="Avg Match" value={`${stats.averageMatch}%`} />
+      </div>
+      
+      {/* Job listings with improved filtering */}
+      <JobFilters onFilterChange={handleFilterChange} />
+      <JobGrid jobs={matchedJobs} userSkills={userSkills} />
+    </div>
+  );
+};
+```
+
+**Afternoon (4 hours): Launch Preparation**
+```bash
+# Production deployment checklist
+# Backend optimizations
+pip install gunicorn  # Production WSGI server
+# Add health check endpoint
+# Configure logging
+# Set up error monitoring
+
+# Frontend optimizations  
+npm run build  # Optimize bundle
+# Configure error boundaries
+# Add loading states
+# Test responsive design
+
+# Final deployment
+railway deploy --prod
+vercel --prod
+
+# Post-deployment verification
+curl https://your-api.railway.app/health
+# Test complete user flow
+# Verify database connections
+# Check Claude API integration
+```
+
+**End of Day 5 Deliverables:**
+- ✅ Production-ready deployment
+- ✅ User dashboard with statistics
+- ✅ Error handling and loading states
+- ✅ Complete user onboarding flow
+- ✅ Ready for user feedback
+
+### MVP Success Metrics
+- **Technical**: 99% uptime, <2s page load, all API endpoints working
+- **User**: 10 signups in first week, 5 resume uploads, average 75%+ match scores
+- **Business**: User feedback collected, feature priorities identified
+
+### Post-MVP Enhancement Roadmap
+
+#### Week 2: First Iteration (Based on User Feedback)
+**High-Priority Enhancements:**
+```python
+# Replace hardcoded jobs with live scraping
+# backend/app/scrapers/linkedin_scraper.py
+class LinkedInScraper:
+    def scrape_jobs(self, query: str = "data scientist remote brazil") -> List[Dict]:
+        # Implement actual LinkedIn job scraping
+        # Use Scrapy or requests + BeautifulSoup
+        pass
+
+# Add basic email notifications
+# backend/app/services/notification_service.py  
+class NotificationService:
+    def send_job_alert(self, user_email: str, new_jobs: List[Job]):
+        # Send weekly digest of new matching jobs
+        pass
+```
+
+#### Week 3: Advanced Features
+```python
+# Add skill gap analysis (simplified version)
+# backend/app/services/skill_analyzer.py
+class SkillAnalyzer:
+    def analyze_missing_skills(self, user_skills: List[str], target_jobs: List[Job]) -> Dict:
+        # Identify skills missing from user profile
+        # Suggest learning resources
+        pass
+
+# Background job processing
+# backend/app/workers/job_scraper.py
+@celery_app.task
+def scrape_all_job_sources():
+    # Daily job scraping from multiple sources
+    pass
+```
+
+#### Week 4: Scale Preparation
+- Performance optimization
+- Database indexing
+- Caching layer (Redis)
+- User analytics
+- A/B testing infrastructure
+
+### Development Guidelines for MVP
+
+#### Code Quality Standards (Even for MVP)
+```python
+# Always use proper error handling
+try:
+    result = external_api_call()
+except APIError as e:
+    logger.error(f"API call failed: {e}")
+    return fallback_response()
+
+# Always use environment variables
+DATABASE_URL = os.getenv("DATABASE_URL")
+CLAUDE_API_KEY = os.getenv("CLAUDE_API_KEY")
+
+# Always use proper typing
+def calculate_match_score(user_skills: List[str], job_skills: List[str]) -> int:
+    # Implementation here
+    pass
+
+# Always separate concerns
+class JobService:  # Business logic
+    pass
+
+class JobRepository:  # Data access
+    pass
+
+class JobController:  # HTTP handling
+    pass
+```
+
+#### Testing Strategy for MVP
+```python
+# Minimum viable tests (focus on critical paths)
+def test_user_registration():
+    # Test user can register successfully
+    pass
+
+def test_resume_upload_and_parsing():
+    # Test complete resume processing flow
+    pass
+
+def test_job_matching_calculation():
+    # Test matching algorithm accuracy
+    pass
+
+def test_claude_api_integration():
+    # Test AI resume parsing with mocked responses
+    pass
+
+# Integration test for complete user flow
+def test_complete_user_journey():
+    # Register -> Upload resume -> View matched jobs -> Save job
+    pass
+```
+
+#### Deployment Pipeline for MVP
+```yaml
+# .github/workflows/deploy.yml (simple but effective)
+name: Deploy MVP
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run tests
+        run: |
+          cd backend
+          pip install -r requirements.txt
+          pytest app/tests/
+  
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Railway
+        run: railway up
+      - name: Deploy to Vercel
+        run: vercel --prod
+```
+
+### MVP vs Full Product Transition Strategy
+
+#### Designed for Enhancement (Not Replacement)
+```python
+# MVP approach - simple but extensible
+class ResumeService:
+    def parse_resume(self, file_content: bytes) -> Dict:
+        # MVP: Simple keyword extraction
+        # Full: Claude API + NLP models + ML enhancement
+        pass
+
+# Full product enhancement - same interface, better implementation
+class ResumeService:
+    def __init__(self):
+        self.claude_parser = ClaudeParser()
+        self.ml_model = SkillExtractionModel()
+        self.nlp_pipeline = SpacyPipeline()
+    
+    def parse_resume(self, file_content: bytes) -> Dict:
+        # Enhanced implementation, same interface
+        pass
+```
+
+#### Feature Flag System for Gradual Rollout
+```python
+# backend/app/core/feature_flags.py
+class FeatureFlags:
+    USE_CLAUDE_API = os.getenv("USE_CLAUDE_API", "true") == "true"
+    USE_ML_MATCHING = os.getenv("USE_ML_MATCHING", "false") == "true"
+    ENABLE_SKILL_ANALYSIS = os.getenv("ENABLE_SKILL_ANALYSIS", "false") == "true"
+
+# Usage in services
+if FeatureFlags.USE_CLAUDE_API:
+    result = await self.claude_parser.parse_resume(text)
+else:
+    result = self.simple_parser.parse_resume(text)
+```
+
+This MVP roadmap ensures you build a **solid foundation quickly** that can be **enhanced iteratively** without architectural rewrites. Each day builds upon the previous with **proper software engineering practices** from day one.
 
 ### Core Workflow Process
 Based on the [issue-driven development methodology](https://gist.github.com/Mattchine/176ca6a0c7cd3eaa442dd9d7559ad2f9), combined with test-driven development:
