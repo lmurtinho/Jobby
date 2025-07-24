@@ -12,7 +12,7 @@ from sqlalchemy.orm import sessionmaker, Session
 from sqlalchemy.pool import StaticPool
 from typing import Generator
 
-from app.core.database import Base
+from app.database import Base
 
 
 # Use in-memory SQLite for tests
@@ -35,6 +35,8 @@ TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_eng
 
 def create_test_database():
     """Create all database tables for testing."""
+    # Import models to ensure they're registered with SQLAlchemy
+    from app.models import user  # Import to register models
     Base.metadata.create_all(bind=test_engine)
 
 

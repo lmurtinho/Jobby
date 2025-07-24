@@ -320,7 +320,7 @@ dump.rdb
 *.model
 *.bin
 *.onnx
-models/
+/models/
 checkpoints/
 data/raw/
 data/processed/

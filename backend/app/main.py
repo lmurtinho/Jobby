@@ -24,7 +24,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
     # Startup
     print("🚀 AI Job Tracker API starting up...")
-    # TODO: Add database connection initialization
+    # Import models to ensure they're registered with SQLAlchemy
+    from app.models import user  # Import to register models
+    # Initialize database tables
+    from app.database import create_tables
+    create_tables()
+    print("✅ Database tables created/verified")
     # TODO: Add ML model loading
     # TODO: Add background task setup
     
@@ -67,6 +72,10 @@ def create_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    
+    # Include API routers
+    from app.routers import auth
+    application.include_router(auth.router)
     
     # Add health check endpoint
     @application.get("/health", tags=["Health"])

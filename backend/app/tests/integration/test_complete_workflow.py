@@ -28,7 +28,7 @@ from typing import Dict, List, Any
 
 # Test imports (these will fail initially and drive implementation)
 from app.main import app
-from app.core.database import get_db
+from app.database import get_db
 from app.tests.fixtures.test_database import TestSessionLocal, override_get_db
 from app.tests.fixtures.sample_data import (
     sample_resume_pdf,
@@ -57,6 +57,17 @@ class TestCompleteJobTrackingWorkflow:
     7. System sends personalized job alerts
     8. User can track applications and get interview prep
     """
+    
+    @pytest.fixture(autouse=True)
+    def setup_test_database(self):
+        """Set up and tear down test database for each test."""
+        from app.tests.fixtures.test_database import create_test_database, drop_test_database
+        
+        # Setup
+        create_test_database()
+        yield
+        # Teardown
+        drop_test_database()
     
     @pytest.fixture
     def client(self) -> TestClient:
