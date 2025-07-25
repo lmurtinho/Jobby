@@ -5,6 +5,7 @@ This module creates and configures the FastAPI application instance
 following the project architecture and coding standards defined in CLAUDE.md.
 """
 
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
