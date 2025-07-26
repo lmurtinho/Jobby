@@ -47,6 +47,9 @@ def create_test_database() -> None:
     
     This function creates all tables defined by models that inherit from Base.
     """
+    # Import models to register them with Base
+    from app.models.user import User  # noqa: F401
+    
     Base.metadata.create_all(bind=test_engine)
 
 
@@ -56,6 +59,9 @@ def drop_test_database() -> None:
     
     This function drops all tables to ensure clean test state.
     """
+    # Import models to register them with Base
+    from app.models.user import User  # noqa: F401
+    
     Base.metadata.drop_all(bind=test_engine)
 
 
