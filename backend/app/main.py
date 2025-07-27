@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any, AsyncGenerator
 
 from app.core.database import create_tables
-from app.routers import auth, users
+from app.routers import auth, users, jobs
 
 
 @asynccontextmanager
@@ -71,6 +71,7 @@ def create_application() -> FastAPI:
     # Include routers
     application.include_router(auth.router)
     application.include_router(users.router)
+    application.include_router(jobs.router)
     
     # Add health check endpoint
     @application.get("/health", tags=["Health"])
