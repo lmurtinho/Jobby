@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.routers.auth import get_current_user
 from app.schemas.user import UserResponse, ResumeUploadResponse
+from app.services.resume_service import ResumeService
 
 # Create router instance
 router = APIRouter(prefix="/api/v1/users", tags=["Users"])
@@ -89,18 +90,27 @@ async def upload_resume(
             detail="Only PDF files are supported"
         )
     
-    # Placeholder response for Day 2+ functionality
-    # In Day 2+, this will:
-    # 1. Save file to storage
-    # 2. Extract text using PyPDF2
-    # 3. Parse with Claude API for skill extraction
-    # 4. Update user profile with extracted skills
-    return ResumeUploadResponse(
-        filename=resume.filename,
-        parsing_result={
-            "status": "placeholder",
-            "message": "Resume upload endpoint - coming in Day 2",
-            "note": "This endpoint will be enhanced with Claude API integration"
-        },
-        skills_extracted=["Python", "SQL", "Machine Learning"]  # Placeholder skills
-    )
+    # Process resume using ResumeService
+    try:
+        resume_service = ResumeService()
+        file_content = await resume.read()
+        
+        # Process the resume
+        processing_result = resume_service.process_resume(file_content, resume.filename)
+        
+        return ResumeUploadResponse(
+            filename=resume.filename,
+            parsing_result=processing_result,
+            skills_extracted=processing_result.get("skills", [])
+        )
+        
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Resume processing failed: {str(e)}"
+        )
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="An unexpected error occurred during resume processing"
+        )

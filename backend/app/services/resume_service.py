@@ -87,6 +87,12 @@ class ResumeService:
             if re.search(skill_pattern, text_lower):
                 found_skills.append(skill)
         
+        # Special handling for SQL databases - if we find specific SQL databases, also include SQL
+        sql_databases = ["PostgreSQL", "MySQL", "MongoDB"]  # MongoDB is NoSQL but often grouped with database skills
+        if any(db in found_skills for db in sql_databases):
+            if "SQL" not in found_skills:
+                found_skills.append("SQL")
+        
         # Remove duplicates and return
         return list(set(found_skills))
     
@@ -102,7 +108,7 @@ class ResumeService:
                 info["name"] = line
                 break
         
-        # Extract years of experience (simple pattern matching)
+        # Extract years of experience (enhanced pattern matching)
         experience_patterns = [
             r'(\d+)\+?\s*years?\s*(?:of\s*)?experience',
             r'(\d+)\+?\s*anos?\s*de\s*experiência',
@@ -110,11 +116,40 @@ class ResumeService:
         ]
         
         years_experience = 2  # default
+        
+        # First try explicit year mentions
         for pattern in experience_patterns:
             match = re.search(pattern, text.lower())
             if match:
                 years_experience = int(match.group(1))
                 break
+        else:
+            # If no explicit years, try to calculate from date ranges
+            # Look for patterns like "Sep 2023 | Jun 2025" or "Aug 2022 | Aug 2023"
+            date_ranges = re.findall(r'(\w+)\s+(\d{4})\s*\|\s*(\w+)\s+(\d{4})', text)
+            if date_ranges:
+                total_months = 0
+                month_map = {
+                    'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
+                    'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12
+                }
+                
+                for start_month, start_year, end_month, end_year in date_ranges:
+                    try:
+                        start_y = int(start_year)
+                        end_y = int(end_year)
+                        start_m = month_map.get(start_month.lower()[:3], 1)
+                        end_m = month_map.get(end_month.lower()[:3], 12)
+                        
+                        # Calculate months between dates
+                        months = (end_y - start_y) * 12 + (end_m - start_m)
+                        if months > 0:
+                            total_months += months
+                    except (ValueError, KeyError):
+                        continue
+                
+                if total_months > 0:
+                    years_experience = max(2, round(total_months / 12))  # At least 2 years, rounded
         
         info["years_experience"] = years_experience
         

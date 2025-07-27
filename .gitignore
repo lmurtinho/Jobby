@@ -386,3 +386,6 @@ Thumbs.db
 *.bak
 *.backup
 local_*
+
+# Test files with sensitive content
+backend/app/tests/fixtures/TestCV.pdf
