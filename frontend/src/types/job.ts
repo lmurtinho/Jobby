@@ -5,7 +5,7 @@ export interface Job {
   title: string;
   company: string;
   location: string;
-  salary?: string;
+  salary: string;
   description: string;
   requirements: string[];
   posted_date: string;
