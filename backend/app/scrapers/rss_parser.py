@@ -237,7 +237,8 @@ class RSSParser(BaseScraper):
             "description": raw_data.get("description", ""),
             "requirements": raw_data.get("requirements", []),
             "apply_url": raw_data.get("apply_url", ""),
-            "posted_date": raw_data.get("posted_date", datetime.now().strftime("%Y-%m-%d"))
+            "posted_date": raw_data.get("posted_date", datetime.now().strftime("%Y-%m-%d")),
+            "job_type": "Full-time"  # Default to Full-time for RSS jobs
         }
         
         # Add metadata

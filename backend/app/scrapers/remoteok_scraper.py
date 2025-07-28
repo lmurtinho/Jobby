@@ -150,7 +150,8 @@ class RemoteOKScraper(BaseScraper):
             "description": raw_data.get("description", ""),
             "requirements": requirements,
             "apply_url": apply_url,
-            "posted_date": posted_date
+            "posted_date": posted_date,
+            "job_type": "Full-time"  # Default to Full-time for RemoteOK jobs
         }
         
         # Add metadata
