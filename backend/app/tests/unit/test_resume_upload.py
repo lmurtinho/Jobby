@@ -8,9 +8,10 @@ These tests validate the POST /api/v1/users/{user_id}/resume endpoint.
 import pytest
 from fastapi.testclient import TestClient
 from fastapi import status, UploadFile
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from io import BytesIO
 from datetime import datetime
+from pathlib import Path
 
 from app.main import app
 from app.core.database import get_db
@@ -60,11 +61,28 @@ class TestResumeUploadEndpoint:
         """Clean up after tests."""
         app.dependency_overrides = {}
     
-    def test_upload_resume_success(self):
+    @patch('app.services.resume_service.ResumeService.process_resume')
+    def test_upload_resume_success(self, mock_process_resume):
         """Test successful resume upload."""
         # Arrange
         user_id = 1
-        pdf_content = b"%PDF-1.4 fake pdf content"
+        
+        # Mock the resume processing result
+        mock_process_resume.return_value = {
+            "skills": ["Python", "SQL", "Machine Learning"],
+            "experience_level": "mid", 
+            "years_experience": 3,
+            "name": "Test User",
+            "raw_text": "Test resume content...",
+            "parsing_method": "simple_extraction",
+            "filename": "test_resume.pdf"
+        }
+        
+        # Load real PDF file for testing
+        test_pdf_path = Path(__file__).parent.parent / "fixtures" / "TestCV.pdf"
+        with open(test_pdf_path, "rb") as pdf_file:
+            pdf_content = pdf_file.read()
+        
         files = {"resume": ("test_resume.pdf", BytesIO(pdf_content), "application/pdf")}
         
         # Act
@@ -77,15 +95,24 @@ class TestResumeUploadEndpoint:
         assert "parsing_result" in data
         assert "skills_extracted" in data
         assert data["filename"] == "test_resume.pdf"
-        assert data["parsing_result"]["status"] == "placeholder"
         assert isinstance(data["skills_extracted"], list)
         assert len(data["skills_extracted"]) > 0
+        
+        # Verify the service was called with correct parameters
+        mock_process_resume.assert_called_once()
+        call_args = mock_process_resume.call_args
+        assert call_args[0][1] == "test_resume.pdf"  # filename parameter
     
     def test_upload_resume_wrong_user(self):
         """Test resume upload for different user (should fail)."""
         # Arrange
         user_id = 2  # Different from mock user ID (1)
-        pdf_content = b"%PDF-1.4 fake pdf content"
+        
+        # Load real PDF file for testing
+        test_pdf_path = Path(__file__).parent.parent / "fixtures" / "TestCV.pdf"
+        with open(test_pdf_path, "rb") as pdf_file:
+            pdf_content = pdf_file.read()
+        
         files = {"resume": ("test_resume.pdf", BytesIO(pdf_content), "application/pdf")}
         
         # Act
@@ -134,11 +161,28 @@ class TestResumeUploadEndpoint:
         # Assert
         assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     
-    def test_upload_resume_response_structure(self):
-        """Test that response has correct structure for Day 2+ integration."""
+    @patch('app.services.resume_service.ResumeService.process_resume')
+    def test_upload_resume_response_structure(self, mock_process_resume):
+        """Test that resume upload response has correct structure."""
         # Arrange
         user_id = 1
-        pdf_content = b"%PDF-1.4 fake pdf content"
+        
+        # Mock the resume processing result
+        mock_process_resume.return_value = {
+            "skills": ["Python", "SQL", "Machine Learning"],
+            "experience_level": "mid",
+            "years_experience": 3, 
+            "name": "Test User",
+            "raw_text": "Test resume content with Python and SQL experience...",
+            "parsing_method": "simple_extraction",
+            "filename": "resume.pdf"
+        }
+        
+        # Load real PDF file for testing
+        test_pdf_path = Path(__file__).parent.parent / "fixtures" / "TestCV.pdf"
+        with open(test_pdf_path, "rb") as pdf_file:
+            pdf_content = pdf_file.read()
+        
         files = {"resume": ("resume.pdf", BytesIO(pdf_content), "application/pdf")}
         
         # Act
@@ -153,13 +197,13 @@ class TestResumeUploadEndpoint:
         assert isinstance(data["parsing_result"], dict)
         assert isinstance(data["skills_extracted"], list)
         
-        # Validate placeholder content
+        # Validate actual content from mocked service
         parsing_result = data["parsing_result"]
-        assert "status" in parsing_result
-        assert "message" in parsing_result
-        assert "Day 2" in parsing_result["message"]
+        assert "skills" in parsing_result
+        assert "experience_level" in parsing_result
+        assert "parsing_method" in parsing_result
         
-        # Validate placeholder skills
+        # Validate skills
         skills = data["skills_extracted"]
         expected_skills = ["Python", "SQL", "Machine Learning"]
         assert all(skill in skills for skill in expected_skills)
