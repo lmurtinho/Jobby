@@ -5,10 +5,14 @@ This module creates and configures the FastAPI application instance
 following the project architecture and coding standards defined in CLAUDE.md.
 """
 
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any, AsyncGenerator
+
+from app.core.database import create_tables
+from app.routers import auth, users, jobs
 
 
 @asynccontextmanager
@@ -24,9 +28,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
     # Startup
     print("🚀 AI Job Tracker API starting up...")
-    # TODO: Add database connection initialization
-    # TODO: Add ML model loading
-    # TODO: Add background task setup
+    # Initialize database tables
+    create_tables()
+    print("✅ Database tables initialized")
     
     yield
     
@@ -63,6 +67,11 @@ def create_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    
+    # Include routers
+    application.include_router(auth.router)
+    application.include_router(users.router)
+    application.include_router(jobs.router)
     
     # Add health check endpoint
     @application.get("/health", tags=["Health"])

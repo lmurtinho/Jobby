@@ -49,6 +49,9 @@ def create_tables() -> None:
     
     This function creates all tables defined by models that inherit from Base.
     """
+    # Import models to register them with Base
+    from app.models.user import User  # noqa: F401
+    
     Base.metadata.create_all(bind=engine)
 
 
