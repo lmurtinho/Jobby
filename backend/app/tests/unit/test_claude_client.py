@@ -182,7 +182,11 @@ class TestClaudeClient:
         """Test handling of rate limit errors."""
         with patch.object(claude_client, '_client') as mock_client:
             from anthropic import RateLimitError
-            mock_client.messages.create = AsyncMock(side_effect=RateLimitError("Rate limit exceeded"))
+            # Create a mock response object for RateLimitError
+            mock_response = Mock()
+            mock_response.status_code = 429
+            rate_limit_error = RateLimitError("Rate limit exceeded", response=mock_response, body=None)
+            mock_client.messages.create = AsyncMock(side_effect=rate_limit_error)
             
             request = ResumeParseRequest(resume_text=sample_resume_text)
             
@@ -333,10 +337,11 @@ class TestClaudeAPIErrorHandling:
     @pytest.mark.asyncio
     async def test_empty_resume_text(self, claude_client):
         """Test handling of empty resume text."""
-        request = ResumeParseRequest(resume_text="")
+        from pydantic import ValidationError
         
-        with pytest.raises(ValueError, match="Resume text cannot be empty"):
-            await claude_client.parse_resume(request)
+        # Test that ResumeParseRequest validates empty text
+        with pytest.raises(ValidationError):
+            ResumeParseRequest(resume_text="")
 
     @pytest.mark.asyncio
     async def test_very_long_resume_text(self, claude_client):
@@ -361,7 +366,8 @@ class TestClaudeAPIErrorHandling:
         request = ResumeParseRequest(resume_text=malformed_text)
         
         mock_response = Mock()
-        mock_response.content = [Mock(text='{"error": "Cannot parse malformed content"}')]
+        # Return invalid JSON to trigger the error handling
+        mock_response.content = [Mock(text='This is not valid JSON at all!')]
         
         with patch.object(claude_client, '_client') as mock_client:
             mock_client.messages.create = AsyncMock(return_value=mock_response)
