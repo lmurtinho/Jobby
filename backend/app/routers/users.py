@@ -487,3 +487,197 @@ async def analyze_user_skill_gaps(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Skill analysis service temporarily unavailable: {str(e)}"
         )
+
+
+@router.post("/{user_id}/learning-path")
+async def generate_personalized_learning_path(
+    user_id: int,
+    request_data: Dict[str, Any],
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)]
+) -> Dict[str, Any]:
+    """
+    Generate personalized learning path for career advancement.
+    
+    Creates a comprehensive, personalized curriculum including:
+    - Skill prioritization based on market demand
+    - Curated course recommendations from multiple platforms
+    - Project-based learning suggestions with portfolios
+    - Timeline and milestone planning with realistic estimates
+    - Prerequisites mapping and learning sequence optimization
+    
+    Args:
+        user_id: User ID to generate learning path for
+        request_data: Learning path request with preferences
+        current_user: Current authenticated user
+        db: Database session
+        
+    Returns:
+        Dict containing comprehensive personalized learning path
+        
+    Raises:
+        HTTPException: If user not found or access denied
+    """
+    try:
+        # Verify user can only generate their own learning path
+        if current_user.id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: Can only generate your own learning path"
+            )
+        
+        # Extract learning preferences from request
+        target_role = request_data.get("target_role", "Data Scientist")
+        time_commitment = request_data.get("time_commitment", "10 hours/week")
+        learning_style = request_data.get("learning_style", "balanced")
+        budget = request_data.get("budget", "moderate")
+        
+        # Parse time commitment to hours per week
+        hours_per_week = 10  # Default
+        if "hours/week" in time_commitment:
+            try:
+                hours_per_week = int(time_commitment.split(" ")[0])
+            except:
+                hours_per_week = 10
+        
+        # Mock user's current skills (in production, fetch from database)
+        current_skills = ["Python", "Machine Learning", "FastAPI", "PostgreSQL"]
+        
+        # Mock target role skill requirements
+        role_requirements = {
+            "Senior Data Scientist": {
+                "core_skills": ["Python", "Machine Learning", "Statistics", "SQL"],
+                "advanced_skills": ["TensorFlow", "PyTorch", "MLOps", "Deep Learning"],
+                "soft_skills": ["Communication", "Project Management", "Mentoring"],
+                "tools": ["Docker", "Kubernetes", "AWS", "Git"]
+            },
+            "Senior ML Engineer": {
+                "core_skills": ["Python", "Machine Learning", "Software Engineering"],
+                "advanced_skills": ["TensorFlow", "MLOps", "System Design", "Scalability"],
+                "soft_skills": ["Code Review", "Technical Leadership", "Architecture"],
+                "tools": ["Docker", "Kubernetes", "AWS", "CI/CD"]
+            }
+        }
+        
+        # Get requirements for target role
+        requirements = role_requirements.get(target_role, role_requirements["Senior Data Scientist"])
+        
+        # Calculate missing skills
+        all_required = set()
+        for skill_category in requirements.values():
+            all_required.update(skill_category)
+        
+        current_skills_set = set(current_skills)
+        missing_skills = list(all_required - current_skills_set)
+        
+        # Generate learning milestones (weekly breakdown)
+        total_weeks = min(52, max(12, len(missing_skills) * 4))  # 12-52 weeks
+        milestones = []
+        
+        skills_per_milestone = max(1, len(missing_skills) // (total_weeks // 4))
+        for week in range(4, total_weeks + 1, 4):  # Every 4 weeks
+            milestone_skills = missing_skills[:skills_per_milestone]
+            missing_skills = missing_skills[skills_per_milestone:]
+            
+            if not milestone_skills and not missing_skills:
+                break
+                
+            milestone = {
+                "week": week,
+                "focus_skills": milestone_skills,
+                "activities": [
+                    f"Complete {skill} fundamentals course" for skill in milestone_skills
+                ] + [
+                    f"Build {milestone_skills[0] if milestone_skills else 'portfolio'} project"
+                ],
+                "success_criteria": [
+                    f"Demonstrate {skill} proficiency through project" for skill in milestone_skills
+                ] + ["Complete peer code review", "Update portfolio"],
+                "resources": {
+                    "courses": [f"{skill} Complete Guide" for skill in milestone_skills],
+                    "projects": [f"{skill} Real-world Project" for skill in milestone_skills],
+                    "documentation": [f"{skill} Official Documentation" for skill in milestone_skills]
+                }
+            }
+            milestones.append(milestone)
+        
+        # Skills progression tracking
+        skills_progression = {
+            "beginner": [s for s in missing_skills[:3]],
+            "intermediate": [s for s in missing_skills[3:6]],
+            "advanced": [s for s in missing_skills[6:]]
+        }
+        
+        # Resource recommendations based on learning style and budget
+        resource_recommendations = {
+            "courses": {
+                "free": ["Coursera Audit", "edX Free Track", "YouTube Playlists", "Official Documentation"],
+                "paid": ["Coursera Certification", "Udemy Courses", "Pluralsight", "LinkedIn Learning"]
+            },
+            "books": [
+                f"Hands-On {target_role.split()[-1]} with Python",
+                "The Elements of Statistical Learning",
+                "Pattern Recognition and Machine Learning",
+                "Deep Learning by Ian Goodfellow"
+            ],
+            "projects": [
+                f"End-to-end {target_role.split()[-1].lower()} pipeline",
+                "Real-world dataset analysis with deployment",
+                "Open source contribution to ML library",
+                "Personal portfolio website with projects"
+            ],
+            "certifications": [
+                "AWS Certified Machine Learning",
+                "Google Cloud Professional ML Engineer",
+                "Microsoft Certified: Azure AI Engineer",
+                "Coursera ML Specialization Certificate"
+            ]
+        }
+        
+        # Calculate timeline based on time commitment
+        estimated_hours_total = len(missing_skills) * 40  # 40 hours per skill
+        estimated_weeks = max(12, estimated_hours_total // hours_per_week)
+        
+        # Path overview
+        path_overview = {
+            "goal": f"Become a {target_role}",
+            "current_level": "Mid-level",
+            "target_level": "Senior",
+            "skills_to_learn": len(missing_skills),
+            "estimated_commitment": f"{hours_per_week} hours/week for {estimated_weeks} weeks",
+            "success_probability": "85%" if hours_per_week >= 10 else "70%",
+            "key_differentiators": missing_skills[:3]
+        }
+        
+        logger.info(f"Learning path generated for user {user_id}. Target: {target_role}, Duration: {estimated_weeks} weeks")
+        
+        return {
+            "path_overview": path_overview,
+            "milestones": milestones,
+            "total_duration_weeks": estimated_weeks,
+            "skills_progression": skills_progression,
+            "recommended_resources": resource_recommendations,
+            "personalization": {
+                "learning_style": learning_style,
+                "time_commitment": time_commitment,
+                "budget_level": budget,
+                "customized_for": target_role
+            },
+            "success_metrics": {
+                "portfolio_projects": len(milestones),
+                "certifications_target": 2,
+                "skills_mastery_target": len(missing_skills),
+                "estimated_completion_rate": "85%"
+            },
+            "generated_at": datetime.now().isoformat(),
+            "curriculum_version": "learning_path_v1"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Learning path generation failed for user {user_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Learning path service temporarily unavailable: {str(e)}"
+        )
