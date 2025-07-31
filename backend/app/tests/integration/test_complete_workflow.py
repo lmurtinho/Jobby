@@ -335,19 +335,19 @@ class TestCompleteJobTrackingWorkflow:
         
         print("✅ Complete AI Job Tracker Workflow Test Passed!")
         print(f"✅ User Registration: {user_id}")
-        print(f"✅ Resume Upload: {len(resume_data['skills'])} skills extracted")
+        print(f"✅ Resume Upload: {len(resume_data['skills_extracted'])} skills extracted")
         print(f"✅ Job Scraping: {len(jobs['items'])} jobs scraped")
         print(f"✅ Job Matching: {len(matches['items'])} matches found")
         
         # Verify this is a complete functional MVP
         assert user_id is not None, "User registration failed"
-        assert len(resume_data['skills']) > 0, "Resume processing failed"
+        assert len(resume_data['skills_extracted']) > 0, "Resume processing failed"
         assert len(jobs['items']) > 0, "Job scraping failed"
         assert len(matches['items']) > 0, "Job matching failed"
         
         print("✅ MVP Day 1-3 Complete Workflow Test PASSED!")
         print(f"   👤 User created: {user_data['email']}")
-        print(f"   📄 Resume processed with {len(resume_data['skills'])} skills extracted")
+        print(f"   📄 Resume processed with {len(resume_data['skills_extracted'])} skills extracted")
         print(f"   💼 {len(jobs['items'])} jobs discovered from multiple sources")
         print(f"   🎯 {len(matches['items'])} job matches calculated")
         print("   📊 Day 4-5 will add: AI skill analysis, notifications, application tracking")
