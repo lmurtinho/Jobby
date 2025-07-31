@@ -37,6 +37,28 @@ class TestMainApplication:
         assert response.status_code == 200
         assert response.json()["status"] == "healthy"
     
+    def test_health_endpoint_includes_database_status(self):
+        """Test that health endpoint includes database connectivity status."""
+        from app.main import app
+        
+        client = TestClient(app)
+        response = client.get("/health")
+        
+        health_data = response.json()
+        assert "database" in health_data, "Health endpoint should include database status"
+        assert isinstance(health_data["database"], dict), "Database status should be an object"
+        assert "status" in health_data["database"], "Database status should have a status field"
+    
+    def test_health_endpoint_cors_options_request(self):
+        """Test that health endpoint properly handles CORS OPTIONS requests."""
+        from app.main import app
+        
+        client = TestClient(app)
+        response = client.options("/health")
+        
+        # OPTIONS request should return 200 or 204 for CORS preflight
+        assert response.status_code in [200, 204], f"OPTIONS request returned {response.status_code}"
+    
     def test_app_has_api_documentation(self):
         """Test that app provides OpenAPI documentation."""
         from app.main import app
@@ -94,3 +116,48 @@ class TestMainApplication:
         
         # If we can create a test client, startup events work
         assert client is not None
+
+
+class TestProductionDependencies:
+    """Test suite for production dependencies and configuration."""
+    
+    def test_gunicorn_is_installed(self):
+        """Test that gunicorn is available for production deployment."""
+        import subprocess
+        
+        result = subprocess.run(
+            ["pip", "show", "gunicorn"], 
+            capture_output=True, 
+            text=True
+        )
+        assert result.returncode == 0, "Gunicorn should be installed for production"
+    
+    def test_psutil_is_installed(self):
+        """Test that psutil is available for memory monitoring."""
+        try:
+            import psutil
+            assert psutil is not None
+        except ImportError:
+            pytest.fail("psutil should be installed for memory monitoring")
+    
+    def test_health_endpoint_memory_monitoring(self):
+        """Test that health endpoint can be monitored for memory usage."""
+        import psutil
+        from app.main import app
+        
+        client = TestClient(app)
+        
+        # Get initial memory usage
+        process = psutil.Process()
+        initial_memory = process.memory_info().rss
+        
+        # Make a request
+        response = client.get("/health")
+        assert response.status_code == 200
+        
+        # Memory usage should be reasonable
+        final_memory = process.memory_info().rss
+        memory_increase = final_memory - initial_memory
+        
+        # Memory increase should be reasonable (less than 10MB for a simple request)
+        assert memory_increase < 10 * 1024 * 1024, f"Memory usage increased too much: {memory_increase} bytes"

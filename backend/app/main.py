@@ -82,11 +82,36 @@ def create_application() -> FastAPI:
         Returns:
             Dict[str, Any]: Health status information
         """
+        from app.core.database import engine
+        from sqlalchemy import text
+        
+        # Check database connectivity
+        db_status = "healthy"
+        try:
+            with engine.connect() as connection:
+                result = connection.execute(text("SELECT 1"))
+                result.fetchone()
+        except Exception as e:
+            db_status = f"unhealthy: {str(e)}"
+        
         return {
             "status": "healthy",
             "service": "AI Job Tracker API",
-            "version": "1.0.0"
+            "version": "1.0.0",
+            "database": {
+                "status": db_status
+            }
         }
+    
+    @application.options("/health", tags=["Health"])
+    async def health_check_options() -> Dict[str, Any]:
+        """
+        CORS preflight handler for health check endpoint.
+        
+        Returns:
+            Dict[str, Any]: Empty response for CORS preflight
+        """
+        return {}
     
     return application
 
