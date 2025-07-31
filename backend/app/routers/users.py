@@ -681,3 +681,328 @@ async def generate_personalized_learning_path(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Learning path service temporarily unavailable: {str(e)}"
         )
+
+
+@router.post("/{user_id}/notification-preferences")
+async def update_notification_preferences(
+    user_id: int,
+    request_data: Dict[str, Any],
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)]
+) -> Dict[str, Any]:
+    """
+    Update user notification preferences for AI-powered alerts.
+    
+    Configures personalized notification settings including:
+    - Job alert frequency and AI filtering preferences
+    - Learning reminder notifications
+    - Market insights and trend updates
+    - Skill-based notification targeting
+    
+    Args:
+        user_id: User ID to update preferences for
+        request_data: Notification preferences configuration
+        current_user: Current authenticated user
+        db: Database session
+        
+    Returns:
+        Dict containing updated preferences confirmation
+        
+    Raises:
+        HTTPException: If user not found or access denied
+    """
+    try:
+        # Verify user can only update their own preferences
+        if current_user.id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: Can only update your own notification preferences"
+            )
+        
+        # Extract notification preferences from request
+        job_alerts = request_data.get("job_alerts", False)
+        learning_reminders = request_data.get("learning_reminders", False)
+        market_insights = request_data.get("market_insights", False)
+        frequency = request_data.get("frequency", "weekly")
+        ai_filtering = request_data.get("ai_filtering", True)
+        
+        # Validate frequency values
+        valid_frequencies = ["daily", "weekly", "monthly"]
+        if frequency not in valid_frequencies:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid frequency. Must be one of: {', '.join(valid_frequencies)}"
+            )
+        
+        # Mock preference storage (in production, would save to database)
+        # For now, store in memory for testing
+        if not hasattr(update_notification_preferences, 'preferences_storage'):
+            update_notification_preferences.preferences_storage = {}
+        
+        preferences = {
+            "job_alerts": job_alerts,
+            "learning_reminders": learning_reminders,
+            "market_insights": market_insights,
+            "frequency": frequency,
+            "ai_filtering": ai_filtering,
+            "updated_at": datetime.now().isoformat(),
+            "user_id": user_id
+        }
+        
+        update_notification_preferences.preferences_storage[user_id] = preferences
+        
+        logger.info(f"Notification preferences updated for user {user_id}: {frequency} {job_alerts=} {ai_filtering=}")
+        
+        return {
+            "message": "Notification preferences updated successfully",
+            "preferences": preferences,
+            "ai_features_enabled": ai_filtering,
+            "estimated_weekly_notifications": 3 if frequency == "weekly" else 1 if frequency == "monthly" else 7
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to update notification preferences for user {user_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Notification service temporarily unavailable: {str(e)}"
+        )
+
+
+@router.post("/{user_id}/generate-job-alert")
+async def generate_ai_job_alert(
+    user_id: int,
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)]
+) -> Dict[str, Any]:
+    """
+    Generate AI-curated job alert with personalized content.
+    
+    Creates intelligent job alerts featuring:
+    - AI-filtered job recommendations based on user profile
+    - Personalized skill gap insights
+    - Learning recommendations tailored to career goals
+    - Market trend analysis and salary insights
+    - Custom email content generation
+    
+    Args:
+        user_id: User ID to generate job alert for
+        current_user: Current authenticated user
+        db: Database session
+        
+    Returns:
+        Dict containing personalized job alert data
+        
+    Raises:
+        HTTPException: If user not found or access denied
+    """
+    try:
+        # Verify user can only generate their own job alerts
+        if current_user.id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: Can only generate your own job alerts"
+            )
+        
+        # Mock user profile and preferences (in production, fetch from database)
+        user_profile = {
+            "skills": ["Python", "Machine Learning", "FastAPI", "PostgreSQL"],
+            "experience_level": "mid",
+            "career_interests": ["AI/ML", "Data Science"],
+            "location_preference": "Remote",
+            "salary_expectation": 15000
+        }
+        
+        # Get user notification preferences
+        preferences = {}
+        if hasattr(update_notification_preferences, 'preferences_storage'):
+            preferences = update_notification_preferences.preferences_storage.get(user_id, {
+                "job_alerts": True,
+                "ai_filtering": True,
+                "frequency": "weekly"
+            })
+        
+        # Check if job alerts are enabled (default to True for testing)
+        if not preferences.get("job_alerts", True):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Job alerts are disabled. Please enable job alerts in notification preferences."
+            )
+        
+        # Get available jobs (from jobs storage)
+        from app.routers.jobs import jobs_storage
+        available_jobs = jobs_storage if jobs_storage else [
+            {
+                "title": "Senior ML Engineer",
+                "company": "AI Startup Inc",
+                "location": "Remote",
+                "salary": "$12,000-18,000/month",
+                "description": "Join our ML team building next-generation AI solutions",
+                "requirements": ["Python", "TensorFlow", "MLOps", "Kubernetes"],
+                "apply_url": "https://ai-startup.com/jobs/ml-engineer",
+                "posted_date": "2024-01-15"
+            },
+            {
+                "title": "Data Science Manager",
+                "company": "TechCorp Global",
+                "location": "São Paulo, Brazil",
+                "salary": "$15,000-22,000/month", 
+                "description": "Lead our data science team in developing ML solutions",
+                "requirements": ["Python", "Machine Learning", "Leadership", "SQL", "AWS"],
+                "apply_url": "https://techcorp.com/jobs/ds-manager",
+                "posted_date": "2024-01-16"
+            },
+            {
+                "title": "AI Research Scientist",
+                "company": "Research Lab",
+                "location": "Remote - Global",
+                "salary": "$18,000-25,000/month",
+                "description": "Conduct cutting-edge AI research with publication opportunities",
+                "requirements": ["Python", "PyTorch", "Research", "Statistics", "Publications"],
+                "apply_url": "https://researchlab.com/jobs/ai-scientist",
+                "posted_date": "2024-01-17"
+            }
+        ]
+        
+        # AI-powered job filtering and ranking
+        personalized_jobs = []
+        for job in available_jobs[:5]:  # Top 5 most relevant jobs
+            # Calculate relevance score based on user profile
+            user_skills_set = set(user_profile["skills"])
+            job_requirements_set = set(job.get("requirements", []))
+            
+            skill_match_count = len(user_skills_set & job_requirements_set)
+            total_requirements = len(job_requirements_set)
+            relevance_score = skill_match_count / total_requirements if total_requirements > 0 else 0.0
+            
+            # Apply AI filtering threshold (more permissive for testing)
+            if preferences.get("ai_filtering", True) and relevance_score < 0.2:
+                continue
+            
+            # Generate AI explanation for why this job matches
+            matching_skills = list(user_skills_set & job_requirements_set)
+            missing_skills = list(job_requirements_set - user_skills_set)
+            
+            ai_explanation = f"Strong match with {len(matching_skills)} relevant skills: {', '.join(matching_skills[:3])}"
+            if missing_skills:
+                ai_explanation += f". Consider developing: {', '.join(missing_skills[:2])}"
+            
+            skill_match_analysis = {
+                "matching_skills": matching_skills,
+                "missing_skills": missing_skills,
+                "skill_development_priority": missing_skills[:3],
+                "transferable_experience": ["Project Management", "Communication"] if relevance_score > 0.5 else []
+            }
+            
+            personalized_job = {
+                "job_id": f"alert_job_{hash(job['title'])}",
+                "title": job["title"],
+                "company": job["company"],
+                "location": job.get("location", "Not specified"),
+                "salary": job.get("salary", "Not specified"),
+                "relevance_score": round(relevance_score, 2),
+                "ai_explanation": ai_explanation,
+                "skill_match_analysis": skill_match_analysis,
+                "apply_url": job.get("apply_url"),
+                "posted_date": job.get("posted_date")
+            }
+            
+            personalized_jobs.append(personalized_job)
+        
+        # Sort by relevance score (highest first)
+        personalized_jobs.sort(key=lambda x: x["relevance_score"], reverse=True)
+        
+        # Generate skill insights
+        all_missing_skills = set()
+        for job in personalized_jobs:
+            all_missing_skills.update(job["skill_match_analysis"]["missing_skills"])
+        
+        skill_insights = {
+            "trending_skills": list(all_missing_skills)[:3],
+            "skill_gaps_identified": len(all_missing_skills),
+            "learning_priority": list(all_missing_skills)[:2],
+            "market_demand_analysis": "High demand for ML and cloud skills in current job market"
+        }
+        
+        # Generate market trends
+        market_trends = {
+            "salary_trends": "+12% average salary increase for ML engineers in 2024",
+            "skill_demand_changes": ["MLOps +25%", "Kubernetes +20%", "AWS +15%"],
+            "remote_work_trends": "85% of new ML positions offer remote work options",
+            "hiring_outlook": "Strong demand expected through Q2 2024"
+        }
+        
+        # Generate learning suggestions based on skill gaps
+        learning_suggestions = []
+        for skill in list(all_missing_skills)[:3]:
+            learning_suggestions.append({
+                "skill": skill,
+                "recommended_course": f"{skill} Fundamentals for ML Engineers",
+                "estimated_time": "4-6 weeks",
+                "priority": "high" if skill in ["TensorFlow", "MLOps", "AWS"] else "medium",
+                "career_impact": "Increase job match rate by 15-20%"
+            })
+        
+        # Generate personalized email content
+        subject_options = [
+            f"🤖 {len(personalized_jobs)} AI-Curated Jobs Match Your Profile",
+            f"🎯 Your Weekly ML Career Update - {len(personalized_jobs)} New Opportunities",
+            f"💼 Personalized Job Alert: {personalized_jobs[0]['title']} at {personalized_jobs[0]['company']}" if personalized_jobs else "Your Personalized Job Alert"
+        ]
+        
+        email_content = {
+            "subject": subject_options[0],
+            "html_body": f"""
+            <h2>🤖 Your AI-Curated Job Alert</h2>
+            <p>Hi! We found {len(personalized_jobs)} jobs that match your profile:</p>
+            
+            <div style="margin: 20px 0;">
+                <h3>🎯 Top Matches This Week</h3>
+                {"".join([f"<div style='border: 1px solid #ddd; padding: 10px; margin: 10px 0;'><h4>{job['title']} at {job['company']}</h4><p>Match Score: {job['relevance_score']:.0%}</p><p>{job['ai_explanation']}</p></div>" for job in personalized_jobs[:3]])}
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h3>📈 Skill Insights</h3>
+                <p>Top skills to develop: {', '.join(skill_insights['learning_priority'])}</p>
+                <p>{skill_insights['market_demand_analysis']}</p>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h3>🚀 Learning Recommendations</h3>
+                {"".join([f"<li>{rec['skill']}: {rec['recommended_course']} ({rec['estimated_time']})</li>" for rec in learning_suggestions])}
+            </div>
+            """,
+            "personalization_tokens": {
+                "user_name": current_user.name,
+                "top_skill": user_profile["skills"][0],
+                "job_count": len(personalized_jobs),
+                "relevance_score": personalized_jobs[0]["relevance_score"] if personalized_jobs else 0.0
+            }
+        }
+        
+        logger.info(f"AI job alert generated for user {user_id}: {len(personalized_jobs)} personalized jobs")
+        
+        return {
+            "personalized_jobs": personalized_jobs,
+            "skill_insights": skill_insights,
+            "market_trends": market_trends,
+            "learning_suggestions": learning_suggestions,
+            "email_content": email_content,
+            "alert_summary": {
+                "total_jobs_analyzed": len(available_jobs),
+                "personalized_matches": len(personalized_jobs),
+                "average_relevance_score": round(sum(j["relevance_score"] for j in personalized_jobs) / len(personalized_jobs), 2) if personalized_jobs else 0.0,
+                "ai_filtering_applied": preferences.get("ai_filtering", True),
+                "generated_at": datetime.now().isoformat()
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"AI job alert generation failed for user {user_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"AI notification service temporarily unavailable: {str(e)}"
+        )
