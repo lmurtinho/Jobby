@@ -5,10 +5,11 @@ This module provides FastAPI router with user profile management endpoints
 including job matching functionality following CLAUDE.md conventions and API design patterns.
 """
 
-from typing import Annotated, List, Optional
+from typing import Annotated, List, Optional, Dict, Any
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Query
 from sqlalchemy.orm import Session
+import logging
 
 from app.core.database import get_db
 from app.routers.auth import get_current_user
@@ -19,6 +20,9 @@ from app.services.job_matching_service import JobMatchingService
 
 # Create router instance
 router = APIRouter(prefix="/api/v1/users", tags=["Users"])
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 
 @router.get("/{user_id}/profile", response_model=UserResponse)
@@ -327,4 +331,159 @@ async def get_job_matches(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to retrieve job matches: {str(e)}"
+        )
+
+
+@router.post("/{user_id}/skill-analysis")
+async def analyze_user_skill_gaps(
+    user_id: int,
+    request_data: Dict[str, Any],
+    current_user: Annotated[UserResponse, Depends(get_current_user)],
+    db: Annotated[Session, Depends(get_db)]
+) -> Dict[str, Any]:
+    """
+    Analyze user skill gaps with learning recommendations.
+    
+    Provides comprehensive skill gap analysis including:
+    - Missing skills identification with priority ranking
+    - Market-driven skill importance calculation  
+    - Salary impact analysis per skill
+    - Learning difficulty assessment
+    - Personalized learning recommendations
+    
+    Args:
+        user_id: User ID to analyze skills for
+        request_data: Analysis request with target job titles
+        current_user: Current authenticated user
+        db: Database session
+        
+    Returns:
+        Dict containing comprehensive skill gap analysis
+        
+    Raises:
+        HTTPException: If user not found or access denied
+    """
+    try:
+        # Verify user can only analyze their own profile
+        if current_user.id != user_id:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access denied: Can only analyze your own skill gaps"
+            )
+        
+        # Get target job titles from request
+        target_job_titles = request_data.get("target_job_titles", [])
+        if not target_job_titles:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="target_job_titles is required for skill gap analysis"
+            )
+        
+        # Mock user skills (in production, would fetch from database)
+        user_skills = ["Python", "Machine Learning", "FastAPI", "PostgreSQL"]
+        
+        # Mock market-driven skill analysis
+        # In production, this would use Claude API for intelligent analysis
+        market_skills_data = {
+            "Senior ML Engineer": ["Python", "TensorFlow", "MLOps", "Kubernetes", "Docker", "AWS"],
+            "Data Science Manager": ["Python", "Machine Learning", "Leadership", "SQL", "AWS", "Team Management"],
+            "AI Research Scientist": ["Python", "PyTorch", "Research", "Statistics", "Deep Learning", "Publications"]
+        }
+        
+        # Aggregate skills from target jobs
+        all_required_skills = set()
+        for job_title in target_job_titles:
+            if job_title in market_skills_data:
+                all_required_skills.update(market_skills_data[job_title])
+        
+        # Calculate missing skills
+        user_skills_set = set(user_skills)
+        missing_skills = list(all_required_skills - user_skills_set)
+        
+        # Generate skill gap analysis with market insights
+        skill_gap_analysis = []
+        for skill in missing_skills:
+            # Mock market data calculation
+            importance_score = 0.9 if skill in ["TensorFlow", "MLOps", "AWS"] else 0.7
+            market_demand = "very_high" if importance_score > 0.8 else "high"
+            salary_impact = "+15%" if importance_score > 0.8 else "+10%"
+            acquisition_difficulty = "moderate"
+            
+            skill_gap_analysis.append({
+                "skill_name": skill,
+                "importance_score": importance_score,
+                "market_demand": market_demand,
+                "salary_impact": salary_impact,
+                "acquisition_difficulty": acquisition_difficulty
+            })
+        
+        # Sort by importance score (highest first)
+        skill_gap_analysis.sort(key=lambda x: x["importance_score"], reverse=True)
+        
+        # Generate learning recommendations
+        learning_recommendations = []
+        for skill_data in skill_gap_analysis[:5]:  # Top 5 skills
+            skill = skill_data["skill_name"]
+            
+            # Mock learning recommendations
+            courses = [f"{skill} Fundamentals", f"Advanced {skill}"]
+            projects = [f"Build {skill} project", f"{skill} portfolio"]
+            estimated_hours = 40 if skill_data["acquisition_difficulty"] == "moderate" else 60
+            prerequisites = ["Python basics"] if skill != "Python" else []
+            
+            learning_recommendations.append({
+                "skill": skill,
+                "courses": courses,
+                "projects": projects,
+                "estimated_hours": estimated_hours,
+                "prerequisites": prerequisites
+            })
+        
+        # Calculate skill priorities based on market demand
+        skill_priorities = {
+            "critical": [s for s in skill_gap_analysis if s["importance_score"] > 0.8],
+            "important": [s for s in skill_gap_analysis if 0.6 < s["importance_score"] <= 0.8],
+            "nice_to_have": [s for s in skill_gap_analysis if s["importance_score"] <= 0.6]
+        }
+        
+        # Market insights
+        market_insights = {
+            "trending_skills": ["MLOps", "Kubernetes", "TensorFlow"],
+            "salary_growth_potential": "15-25% increase with top 3 skills",
+            "market_competition": "moderate",
+            "recommended_timeline": "6-12 months for significant impact"
+        }
+        
+        # Improvement timeline estimation
+        improvement_timeline = {
+            "3_months": [s["skill_name"] for s in skill_gap_analysis if s["acquisition_difficulty"] == "easy"][:2],
+            "6_months": [s["skill_name"] for s in skill_gap_analysis if s["acquisition_difficulty"] == "moderate"][:3],
+            "12_months": [s["skill_name"] for s in skill_gap_analysis if s["acquisition_difficulty"] == "hard"][:2]
+        }
+        
+        logger.info(f"Skill gap analysis completed for user {user_id}. Found {len(missing_skills)} skill gaps.")
+        
+        return {
+            "missing_skills": skill_gap_analysis,
+            "skill_priorities": skill_priorities,
+            "learning_recommendations": learning_recommendations,
+            "market_insights": market_insights,
+            "improvement_timeline": improvement_timeline,
+            "analysis_summary": {
+                "total_gaps_identified": len(missing_skills),
+                "critical_skills_missing": len(skill_priorities["critical"]),
+                "estimated_learning_hours": sum(r["estimated_hours"] for r in learning_recommendations),
+                "target_jobs_analyzed": len(target_job_titles)
+            },
+            "generated_at": datetime.now().isoformat(),
+            "analysis_version": "skill_gap_v1"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Skill gap analysis failed for user {user_id}: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Skill analysis service temporarily unavailable: {str(e)}"
         )
