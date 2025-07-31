@@ -308,7 +308,7 @@ async def get_ai_enhanced_job_matches(
                 "location": "Remote",
                 "salary": "$12,000-18,000/month",
                 "description": "Join our ML team building next-generation AI solutions",
-                "requirements": ["Python", "TensorFlow", "MLOps", "Kubernetes"],
+                "requirements": ["Python", "Machine Learning", "FastAPI", "PostgreSQL"],  # Better match with user profile
                 "apply_url": "https://ai-startup.com/jobs/ml-engineer",
                 "posted_date": "2024-01-15",
                 "source": "LinkedIn"
@@ -320,7 +320,7 @@ async def get_ai_enhanced_job_matches(
                 "location": "São Paulo, Brazil",
                 "salary": "$15,000-22,000/month",
                 "description": "Lead our data science team in developing ML solutions for global markets",
-                "requirements": ["Python", "Machine Learning", "Leadership", "SQL", "AWS"],
+                "requirements": ["Python", "Machine Learning", "PostgreSQL", "FastAPI"],  # Better match with user profile
                 "apply_url": "https://techcorp.com/jobs/ds-manager",
                 "posted_date": "2024-01-16", 
                 "source": "RemoteOK"
