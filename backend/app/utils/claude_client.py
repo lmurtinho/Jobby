@@ -535,3 +535,8 @@ Instructions:
             processing_time_ms=None  # Will be calculated if needed
         )
 
+
+# Backward compatibility alias for integration tests
+# Some tests expect ClaudeAPIClient instead of ClaudeClient
+ClaudeAPIClient = ClaudeClient
+
