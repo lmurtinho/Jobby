@@ -14,12 +14,26 @@ from typing import Generator
 # Database URL from environment variable
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./jobby.db")
 
-# SQLAlchemy engine
-engine = create_engine(
-    DATABASE_URL,
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
-    echo=False  # Set to True for SQL debugging
-)
+# Fix PostgreSQL URL format if needed (Railway compatibility)
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# SQLAlchemy engine with proper PostgreSQL configuration
+engine_kwargs = {
+    "echo": False,  # Set to True for SQL debugging
+}
+
+# Add connection args based on database type
+if DATABASE_URL.startswith("sqlite"):
+    engine_kwargs["connect_args"] = {"check_same_thread": False}
+elif DATABASE_URL.startswith("postgresql"):
+    # PostgreSQL-specific configuration for production
+    engine_kwargs["pool_size"] = 10
+    engine_kwargs["max_overflow"] = 20
+    engine_kwargs["pool_pre_ping"] = True  # Validate connections before use
+    engine_kwargs["pool_recycle"] = 300   # Recycle connections every 5 minutes
+
+engine = create_engine(DATABASE_URL, **engine_kwargs)
 
 
 # Session factory
