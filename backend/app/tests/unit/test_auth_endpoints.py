@@ -42,8 +42,10 @@ class TestAuthenticationEndpoints:
     @pytest.fixture
     def sample_registration_data(self):
         """Sample user registration data matching integration test."""
+        import uuid
+        unique_id = str(uuid.uuid4())[:8]
         return {
-            "email": "maria.silva@example.com",
+            "email": f"maria.silva.{unique_id}@example.com",
             "password": "SecurePassword123!",
             "name": "Maria Silva",
             "location": "São Paulo, Brazil",
@@ -56,10 +58,10 @@ class TestAuthenticationEndpoints:
         }
     
     @pytest.fixture
-    def sample_login_data(self):
+    def sample_login_data(self, sample_registration_data):
         """Sample user login data."""
         return {
-            "email": "maria.silva@example.com",
+            "email": sample_registration_data["email"],
             "password": "SecurePassword123!"
         }
     
@@ -74,7 +76,7 @@ class TestAuthenticationEndpoints:
         response_data = response.json()
         assert "id" in response_data
         assert "access_token" in response_data
-        assert response_data["email"] == "maria.silva@example.com"
+        assert response_data["email"] == sample_registration_data["email"]
         assert response_data["name"] == "Maria Silva"
         assert response_data["token_type"] == "bearer"
         
