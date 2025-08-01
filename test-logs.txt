@@ -1,0 +1,382 @@
+AI JOB TRACKER - COMPLETE TEST EXECUTION LOGS
+Generated: 2025-08-01
+============================================================
+
+BACKEND TEST EXECUTION LOG
+============================================================
+
+Command: source .venv/bin/activate && cd backend && python -m pytest --cov=app --cov-report=term --verbose
+
+============================= test session starts ==============================
+platform darwin -- Python 3.13.1, pytest-8.4.1, pluggy-1.6.0 -- /Users/lucasmurtinho/Documents/Jobby/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/lucasmurtinho/Documents/Jobby/backend
+configfile: pytest.ini
+testpaths: app/tests
+plugins: anyio-4.9.0, asyncio-1.1.0, cov-6.2.1
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 211 items
+
+app/tests/integration/test_complete_workflow.py::TestCompleteJobTrackingWorkflow::test_complete_ai_job_tracker_workflow PASSED [  0%]
+app/tests/integration/test_day5_ai_enhancements.py::TestDay5AIEnhancements::test_ai_enhanced_job_matching_workflow PASSED [  0%]
+app/tests/integration/test_day5_ai_enhancements.py::TestDay5AIEnhancements::test_skill_gap_analysis_workflow PASSED [  1%]
+app/tests/integration/test_day5_ai_enhancements.py::TestDay5AIEnhancements::test_learning_path_generation_service PASSED [  1%]
+app/tests/integration/test_day5_ai_enhancements.py::TestDay5AIEnhancements::test_ai_notification_system PASSED [  2%]
+app/tests/integration/test_day5_ai_enhancements.py::TestDay5AIEnhancements::test_market_insights_and_analytics PASSED [  2%]
+app/tests/integration/test_day5_ai_enhancements.py::TestDay5AIEnhancements::test_complete_day5_ai_workflow_integration FAILED [  3%]
+app/tests/integration/test_day5_ai_enhancements.py::TestDay5APIEndpoints::test_ai_enhanced_endpoints_exist PASSED [  3%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_health_endpoint_exists PASSED [  4%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_health_endpoint_includes_database_status PASSED [  4%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_cors_headers_configured PASSED [  5%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_environment_variables_loaded PASSED [  5%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_gunicorn_production_server_config PASSED [  6%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_railway_deployment_accessibility SKIPPED [  6%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_postgresql_database_connection PASSED [  7%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_authentication_endpoints_production_ready PASSED [  7%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_resume_upload_endpoint_production_ready PASSED [  8%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_api_response_times_acceptable PASSED [  8%]
+app/tests/integration/test_deployment_health.py::TestDeploymentHealth::test_error_handling_production_ready PASSED [  9%]
+app/tests/integration/test_deployment_health.py::TestDeploymentStress::test_concurrent_health_checks PASSED [  9%]
+app/tests/integration/test_deployment_health.py::TestDeploymentStress::test_memory_usage_stable PASSED [  9%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_frontend_project_structure_exists PASSED [ 10%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_frontend_directory_structure PASSED [ 10%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_authentication_pages_exist PASSED [ 11%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_api_client_configuration PASSED [ 11%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_authentication_context_setup PASSED [ 12%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_protected_route_component PASSED [ 12%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_basic_routing_setup PASSED [ 13%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_typescript_configuration PASSED [ 13%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_environment_configuration PASSED [ 14%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_frontend_builds_successfully PASSED [ 14%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_frontend_integrates_with_backend_api SKIPPED [ 15%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendFoundationIntegration::test_complete_authentication_flow_structure PASSED [ 15%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendComponentUnits::test_api_client_unit_structure SKIPPED [ 16%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendComponentUnits::test_auth_context_unit_functionality SKIPPED [ 16%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendComponentUnits::test_job_card_component_unit_structure SKIPPED [ 17%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendComponentUnits::test_job_search_component_unit_structure SKIPPED [ 17%]
+app/tests/integration/test_frontend_foundation.py::TestFrontendComponentUnits::test_protected_route_component_unit_functionality SKIPPED [ 18%]
+app/tests/integration/test_job_features_integration.py::TestJobFeaturesIntegration::test_job_search_flow PASSED [ 18%]
+app/tests/integration/test_job_features_integration.py::TestJobFeaturesIntegration::test_job_aggregation_system PASSED [ 19%]
+app/tests/integration/test_job_features_integration.py::TestJobFeaturesIntegration::test_saved_jobs_functionality PASSED [ 19%]
+app/tests/integration/test_job_features_integration.py::TestJobFeaturesIntegration::test_job_matching_system PASSED [ 20%]
+app/tests/integration/test_job_features_integration.py::TestJobFeaturesIntegration::test_complete_job_tracking_workflow PASSED [ 20%]
+app/tests/unit/test_auth_router.py::TestAuthRouter::test_create_user_endpoint PASSED [ 21%]
+app/tests/unit/test_auth_router.py::TestAuthRouter::test_login_endpoint PASSED [ 21%]
+app/tests/unit/test_auth_router.py::TestAuthRouter::test_get_current_user_endpoint PASSED [ 22%]
+app/tests/unit/test_auth_router.py::TestAuthRouter::test_create_user_duplicate_email PASSED [ 22%]
+app/tests/unit/test_auth_router.py::TestAuthRouter::test_login_invalid_credentials PASSED [ 23%]
+app/tests/unit/test_auth_router.py::TestAuthRouter::test_get_current_user_invalid_token PASSED [ 23%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_claude_client_initialization PASSED [ 24%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_parse_resume_text_success PASSED [ 24%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_parse_resume_text_api_error PASSED [ 25%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_parse_resume_text_json_parsing_error PASSED [ 25%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_enhance_job_description_success PASSED [ 26%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_enhance_job_description_api_error PASSED [ 26%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_analyze_skill_gaps_success PASSED [ 27%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_analyze_skill_gaps_api_error PASSED [ 27%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_generate_learning_path_success PASSED [ 28%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_generate_learning_path_api_error PASSED [ 28%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_create_notification_content_success PASSED [ 29%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_create_notification_content_api_error PASSED [ 29%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_generate_market_insights_success PASSED [ 30%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_generate_market_insights_api_error PASSED [ 30%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_perform_semantic_job_matching_success PASSED [ 31%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_perform_semantic_job_matching_api_error PASSED [ 31%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_format_claude_request_proper_structure PASSED [ 32%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_handle_claude_response_success PASSED [ 32%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_handle_claude_response_api_error PASSED [ 33%]
+app/tests/unit/test_claude_client.py::TestClaudeClient::test_handle_claude_response_json_parse_error PASSED [ 33%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_config_initialization PASSED [ 34%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_database_url_formation PASSED [ 34%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_jwt_settings_configuration PASSED [ 35%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_cors_settings_configuration PASSED [ 35%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_claude_api_settings PASSED [ 36%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_environment_variable_loading PASSED [ 36%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_railway_production_settings PASSED [ 37%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_security_settings PASSED [ 37%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_app_metadata PASSED [ 38%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_debug_mode_configuration PASSED [ 38%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_logging_configuration PASSED [ 39%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_rate_limiting_configuration PASSED [ 39%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_file_upload_configuration PASSED [ 40%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_email_configuration PASSED [ 40%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_redis_configuration PASSED [ 41%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_celery_configuration PASSED [ 41%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_scraping_configuration PASSED [ 42%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_ml_model_configuration PASSED [ 42%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_feature_flags_configuration PASSED [ 43%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_monitoring_configuration PASSED [ 43%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_backup_configuration PASSED [ 44%]
+app/tests/unit/test_core_config.py::TestCoreConfig::test_testing_configuration PASSED [ 44%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_calculate_match_score_basic PASSED [ 45%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_calculate_match_score_no_skills PASSED [ 45%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_calculate_match_score_partial_match PASSED [ 46%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_extract_skills_from_text PASSED [ 46%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_normalize_skill_name PASSED [ 47%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_get_skill_variations PASSED [ 47%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_calculate_experience_score PASSED [ 48%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_calculate_location_score PASSED [ 48%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_calculate_salary_score PASSED [ 49%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_match_jobs_to_user PASSED [ 49%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_get_recommended_jobs PASSED [ 50%]
+app/tests/unit/test_job_matching_service.py::TestJobMatchingService::test_calculate_composite_match_score PASSED [ 50%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_search_jobs_endpoint PASSED [ 51%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_get_job_details_endpoint PASSED [ 51%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_save_job_endpoint PASSED [ 52%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_get_saved_jobs_endpoint PASSED [ 52%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_match_jobs_endpoint PASSED [ 53%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_search_jobs_with_filters PASSED [ 53%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_get_job_details_not_found PASSED [ 54%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_save_job_duplicate PASSED [ 54%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_unsave_job_endpoint PASSED [ 55%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_apply_to_job_endpoint PASSED [ 55%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_get_applications_endpoint PASSED [ 56%]
+app/tests/unit/test_job_router.py::TestJobRouter::test_update_application_status_endpoint PASSED [ 56%]
+app/tests/unit/test_linkedin_scraper.py::TestLinkedInScraper::test_scraper_initialization PASSED [ 57%]
+app/tests/unit/test_linkedin_scraper.py::TestLinkedInScraper::test_scrape_jobs_success PASSED [ 57%]
+app/tests/unit/test_linkedin_scraper.py::TestLinkedInScraper::test_scrape_jobs_rate_limit PASSED [ 58%]
+app/tests/unit/test_linkedin_scraper.py::TestLinkedInScraper::test_parse_job_card PASSED [ 58%]
+app/tests/unit/test_linkedin_scraper.py::TestLinkedInScraper::test_extract_job_details PASSED [ 59%]
+app/tests/unit/test_linkedin_scraper.py::TestLinkedInScraper::test_handle_pagination PASSED [ 59%]
+app/tests/unit/test_main.py::TestMainApp::test_app_initialization PASSED [ 60%]
+app/tests/unit/test_main.py::TestMainApp::test_cors_configuration PASSED [ 60%]
+app/tests/unit/test_main.py::TestMainApp::test_middleware_setup PASSED [ 61%]
+app/tests/unit/test_main.py::TestMainApp::test_router_inclusion PASSED [ 61%]
+app/tests/unit/test_main.py::TestMainApp::test_exception_handlers PASSED [ 62%]
+app/tests/unit/test_main.py::TestMainApp::test_startup_events PASSED [ 62%]
+app/tests/unit/test_main.py::TestMainApp::test_shutdown_events PASSED [ 63%]
+app/tests/unit/test_main.py::TestMainApp::test_static_file_mounting PASSED [ 63%]
+app/tests/unit/test_main.py::TestMainApp::test_health_check_endpoint PASSED [ 64%]
+app/tests/unit/test_main.py::TestMainApp::test_openapi_configuration PASSED [ 64%]
+app/tests/unit/test_main.py::TestMainApp::test_request_validation PASSED [ 65%]
+app/tests/unit/test_main.py::TestMainApp::test_response_serialization PASSED [ 65%]
+app/tests/unit/test_main.py::TestMainApp::test_authentication_middleware PASSED [ 66%]
+app/tests/unit/test_main.py::TestMainApp::test_rate_limiting_middleware PASSED [ 66%]
+app/tests/unit/test_main.py::TestMainApp::test_logging_middleware PASSED [ 67%]
+app/tests/unit/test_main.py::TestMainApp::test_error_handling_middleware PASSED [ 67%]
+app/tests/unit/test_main.py::TestMainApp::test_security_headers_middleware PASSED [ 68%]
+app/tests/unit/test_main.py::TestMainApp::test_compression_middleware PASSED [ 68%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_scraper_initialization PASSED [ 69%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_scrape_jobs_success PASSED [ 69%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_scrape_jobs_api_error PASSED [ 70%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_parse_job_data PASSED [ 70%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_filter_jobs PASSED [ 71%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_rate_limiting PASSED [ 71%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_handle_pagination PASSED [ 72%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_data_validation PASSED [ 72%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_error_handling PASSED [ 73%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_job_deduplication PASSED [ 73%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_search_parameters PASSED [ 74%]
+app/tests/unit/test_remoteok_scraper.py::TestRemoteOKScraper::test_response_caching PASSED [ 74%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_extract_text_from_pdf_success PASSED [ 75%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_extract_text_from_pdf_invalid_file PASSED [ 75%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_extract_text_from_pdf_corrupt_file PASSED [ 76%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_parse_resume_data_success PASSED [ 76%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_parse_resume_data_claude_error PASSED [ 77%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_process_resume_upload_success PASSED [ 77%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_process_resume_upload_invalid_file PASSED [ 78%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_save_resume_data_success PASSED [ 78%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_save_resume_data_database_error PASSED [ 79%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_extract_skills_from_resume PASSED [ 79%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_extract_experience_from_resume PASSED [ 80%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_extract_education_from_resume PASSED [ 80%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_validate_resume_data PASSED [ 81%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_update_user_profile_from_resume PASSED [ 81%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_generate_resume_summary PASSED [ 82%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_extract_contact_information PASSED [ 82%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_parse_work_experience_section PASSED [ 83%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_parse_education_section PASSED [ 83%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_parse_skills_section PASSED [ 84%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_detect_resume_format PASSED [ 84%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_clean_extracted_text PASSED [ 85%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_validate_extracted_data PASSED [ 85%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_handle_parsing_errors PASSED [ 86%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_resume_file_size_validation PASSED [ 86%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_resume_file_type_validation PASSED [ 87%]
+app/tests/unit/test_resume_service.py::TestResumeService::test_resume_content_validation PASSED [ 87%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_parser_initialization PASSED [ 88%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_parse_rss_feed_success PASSED [ 88%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_parse_rss_feed_invalid_url PASSED [ 89%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_parse_job_entry PASSED [ 89%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_extract_job_details PASSED [ 90%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_filter_job_entries PASSED [ 90%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_handle_malformed_xml PASSED [ 91%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_process_multiple_feeds PASSED [ 91%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_job_deduplication PASSED [ 92%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_feed_caching PASSED [ 92%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_error_handling PASSED [ 93%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_date_parsing PASSED [ 93%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_content_cleaning PASSED [ 94%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_feed_validation PASSED [ 94%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_category_extraction PASSED [ 95%]
+app/tests/unit/test_rss_parser.py::TestRSSParser::test_salary_extraction PASSED [ 95%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_creation PASSED [ 96%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_password_hashing PASSED [ 96%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_password_verification PASSED [ 97%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_email_validation PASSED [ 97%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_required_fields PASSED [ 98%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_timestamps PASSED [ 98%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_string_representation PASSED [ 99%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_to_dict_method PASSED [ 99%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_optional_fields_defaults PASSED [ 99%]
+app/tests/unit/test_user_model.py::TestUserModel::test_user_updated_at_timestamp_changes PASSED [100%]
+
+=================================== FAILURES ===================================
+______ TestDay5AIEnhancements.test_complete_day5_ai_workflow_integration _______
+app/tests/integration/test_day5_ai_enhancements.py:402: in test_complete_day5_ai_workflow_integration
+    assert first_match["semantic_score"] > 0.7, "Semantic matching quality insufficient"
+E   AssertionError: Semantic matching quality insufficient
+E   assert 0.6 > 0.7
+================================ tests coverage ================================
+_______________ coverage: platform darwin, python 3.13.1-final-0 _______________
+
+Name                                                     Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------------------------------------
+app/core/config.py                                          36      6     14      6    76%   65, 69, 73, 77, 82, 86
+app/core/database.py                                        22      5      0      0    77%   53-55, 65, 75, 85
+app/main.py                                                 37      7      0      0    81%   30-38, 94-95
+app/routers/auth.py                                         40      5      8      2    85%   67-69, 145, 154, 178
+app/routers/jobs.py                                        105     25     14      4    76%   56-58, 76, 98-100, 148-149, 161, 164-165, 177, 180-181, 227-253, 261-262, 393-395, 410-412
+app/routers/users.py                                       262     49     70     21    79%   50, 89, 111->127, 121, 138-139, 171, 183, 243->245, 254-255, 292, 300, 305, 328-331, 369, 484-486, 524, 537->544, 540-541, 583, 676-680, 717, 732, 763-767, 803, 819->827, 828, 888->891, 1001-1005, 1041, 1270-1274
+app/schemas/user.py                                         83      3      8      1    93%   37->40, 65-67
+app/scrapers/base_scraper.py                                36      6      4      0    85%   26, 31, 36, 48-50
+app/scrapers/linkedin_scraper.py                            83     40     16      1    48%   75->79, 98-118, 122-157, 162-178
+app/scrapers/remoteok_scraper.py                            67      6     24      7    86%   65->69, 115->119, 121-122, 128->132, 137, 138->145, 140-143
+app/scrapers/rss_parser.py                                 107     12     32      4    88%   44, 75-77, 89->86, 91->86, 93-95, 134-136, 147, 155
+app/services/job_matching_service.py                       123     14     56     13    84%   105, 122, 137->144, 161-164, 169, 180, 192, 211, 217, 234, 301, 305, 307
+app/services/resume_service.py                              79      2     30      3    95%   93->97, 146->137, 148-149, 151->154
+app/tests/fixtures/sample_data.py                           22      7      2      1    67%   31-33, 43, 99, 128, 142, 186
+app/tests/fixtures/test_database.py                         25      3      0      0    88%   75, 84-85
+app/tests/integration/test_complete_workflow.py            109      2      2      1    97%   357-369
+app/tests/integration/test_day5_ai_enhancements.py         216     10     12      0    96%   405-413, 463, 482
+app/tests/integration/test_deployment_health.py            119      8     10      2    92%   78-83, 97-98, 138->exit
+app/tests/integration/test_frontend_foundation.py          193     30     26      3    81%   242->248, 294, 322, 327-374, 400
+app/tests/integration/test_job_features_integration.py     137      5     10      4    94%   186->exit, 200->exit, 224->exit, 240-243, 262
+app/tests/unit/test_core_config.py                         122      2      0      0    98%   22-23
+app/tests/unit/test_main.py                                 74      2      0      0    97%   140-141
+app/tests/unit/test_resume_service.py                      235      1     12      1    99%   519
+app/utils/claude_client.py                                 143     31     30      8    76%   103, 145, 159-164, 177, 191-196, 214, 228-233, 418->459, 439-443, 469-475
+----------------------------------------------------------------------------------------------------
+TOTAL                                                     3671    281    396     82    90%
+
+27 files skipped due to complete coverage.
+Coverage HTML written to dir htmlcov
+Coverage XML written to file coverage.xml
+Required test coverage of 80% reached. Total coverage: 90.48%
+=========================== short test summary info ============================
+FAILED app/tests/integration/test_day5_ai_enhancements.py::TestDay5AIEnhancements::test_complete_day5_ai_workflow_integration - AssertionError: Semantic matching quality insufficient
+assert 0.6 > 0.7
+================== 1 failed, 203 passed, 7 skipped in 39.18s ===================
+
+============================================================
+
+FRONTEND TEST EXECUTION LOG
+============================================================
+
+Command: cd frontend && npm test -- --coverage --watchAll=false --verbose
+
+(node:26594) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+PASS src/services/__tests__/jobService.save.test.ts
+  JobService Save/Unsave Functionality
+    saveJob
+      ✓ should save a job successfully (2 ms)
+      ✓ should save multiple jobs and maintain them in localStorage (1 ms)
+      ✓ should not duplicate saved jobs (1 ms)
+      ✓ should handle localStorage errors gracefully
+    unsaveJob
+      ✓ should unsave a previously saved job
+      ✓ should handle unsaving non-existent jobs gracefully
+      ✓ should maintain other saved jobs when unsaving one
+      ✓ should handle localStorage errors gracefully during unsave (1 ms)
+    getSavedJobs
+      ✓ should return empty array when no jobs are saved
+      ✓ should return saved jobs from localStorage
+      ✓ should handle corrupted localStorage data gracefully (1 ms)
+      ✓ should filter out non-existent job IDs from localStorage
+      ✓ should synchronize internal state with localStorage data
+    isJobSaved
+      ✓ should return false for unsaved jobs
+      ✓ should return true for saved jobs
+      ✓ should return false after unsaving a job
+    Integration: Save/Unsave workflow
+      ✓ should handle complete save/unsave/getSaved workflow (2 ms)
+    Edge cases and error handling
+      ✓ should handle empty job ID gracefully
+      ✓ should handle null/undefined job IDs gracefully (1 ms)
+      ✓ should handle very long job IDs
+      ✓ should handle localStorage quota exceeded error
+
+PASS src/App.test.tsx
+  ✓ testing environment works
+  ✓ basic React functionality works (13 ms)
+
+PASS src/utils/__tests__/jobMatching.test.ts
+  Job Matching Utils
+    calculateMatchScore
+      ✓ should return 0 when user has no skills (1 ms)
+      ✓ should return 0 when job has no requirements
+      ✓ should return 80 when user has all job skills (exact matches)
+      ✓ should return 40 when user has half the job skills
+      ✓ should be case insensitive
+    calculateJobMatch
+      ✓ should create a JobMatch with correct score
+    getMatchedJobs
+      ✓ should return jobs sorted by match score descending
+  Sample Jobs Data Validation
+    ✓ should have exactly 50 jobs (1 ms)
+    ✓ should have valid job structure for all jobs (8 ms)
+
+FAIL src/services/__tests__/jobService.test.ts
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/TestScheduler.js:175:18)
+      at node_modules/@jest/core/build/TestScheduler.js:316:17
+      at node_modules/emittery/index.js:260:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:258:23)
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       32 passed, 32 total
+Snapshots:   0 total
+Time:        2.635 s
+Ran all test suites.
+
+
+> frontend@0.1.0 test
+> react-scripts test --coverage --watchAll=false --verbose
+
+---------------------|---------|----------|---------|---------|---------------------------------
+File                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s               
+---------------------|---------|----------|---------|---------|---------------------------------
+All files            |   15.94 |     8.81 |   15.29 |   15.15 |                                 
+ src                 |       0 |        0 |       0 |       0 |                                 
+  App.tsx            |       0 |      100 |       0 |       0 | 11                              
+  index.tsx          |       0 |      100 |     100 |       0 | 7-19                            
+  reportWebVitals.ts |       0 |        0 |       0 |       0 | 3-10                            
+ src/components      |       0 |        0 |       0 |       0 |                                 
+  JobCard.tsx        |       0 |        0 |       0 |       0 | 13-112                          
+  JobSearch.tsx      |       0 |        0 |       0 |       0 | 10-258                          
+  ProtectedRoute.tsx |       0 |        0 |       0 |       0 | 14-42                           
+ src/contexts        |       0 |        0 |       0 |       0 |                                 
+  AuthContext.tsx    |       0 |        0 |       0 |       0 | 43-204                          
+ src/data            |   38.88 |      100 |       0 |   43.75 |                                 
+  sampleJobs.ts      |   38.88 |      100 |       0 |   43.75 | 661,665-666,671,675-676,681-683 
+ src/pages           |       0 |        0 |       0 |       0 |                                 
+  JobDashboard.tsx   |       0 |        0 |       0 |       0 | 8-282                           
+  Login.tsx          |       0 |        0 |       0 |       0 | 9-46                            
+  Register.tsx       |       0 |        0 |       0 |       0 | 12-81                           
+ src/services        |    32.2 |     11.9 |      25 |   33.66 |                                 
+  jobService.ts      |    32.2 |     11.9 |      25 |   33.66 | 18-150,248-287,297-301          
+ src/types           |       0 |        0 |       0 |       0 |                                 
+  job.ts             |       0 |        0 |       0 |       0 |                                 
+ src/utils           |   33.61 |     32.6 |    30.9 |    30.9 |                                 
+  apiClient.ts       |       0 |        0 |       0 |       0 | 5-153                           
+  jobMatching.ts     |   56.33 |    44.11 |   53.12 |   54.83 | 103-112,125-148,158-164,174-183 
+---------------------|---------|----------|---------|---------|---------------------------------
+
+============================================================
+END OF TEST EXECUTION LOGS
+============================================================

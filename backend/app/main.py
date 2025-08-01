@@ -12,7 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, Any, AsyncGenerator
 
 from app.core.database import create_tables
-from app.routers import auth, users, jobs
+from app.routers import auth, users, jobs, config
 
 
 @asynccontextmanager
@@ -72,6 +72,7 @@ def create_application() -> FastAPI:
     application.include_router(auth.router)
     application.include_router(users.router)
     application.include_router(jobs.router)
+    application.include_router(config.router)
     
     # Add health check endpoint
     @application.get("/health", tags=["Health"])
@@ -84,23 +85,40 @@ def create_application() -> FastAPI:
         """
         from app.core.database import engine
         from sqlalchemy import text
+        from datetime import datetime
+        import os
         
         # Check database connectivity
-        db_status = "healthy"
+        db_status = "connected"
+        db_url_info = "sqlite://test"  # Default fallback
+        overall_status = "healthy"
+        
         try:
             with engine.connect() as connection:
                 result = connection.execute(text("SELECT 1"))
                 result.fetchone()
+                
+                # Get database URL info (masked for security)
+                db_url = os.getenv("DATABASE_URL", str(engine.url))
+                if "postgresql://" in db_url:
+                    db_url_info = "postgresql://production"
+                elif "sqlite://" in db_url:
+                    db_url_info = "sqlite://development"
+                else:
+                    db_url_info = "unknown://configured"
+                    
         except Exception as e:
-            db_status = f"unhealthy: {str(e)}"
+            db_status = "disconnected"
+            overall_status = "unhealthy"
+            print(f"Database health check failed: {e}")
         
         return {
-            "status": "healthy",
-            "service": "AI Job Tracker API",
+            "status": overall_status,
+            "database": db_status,  # Changed from nested object to string
+            "timestamp": datetime.utcnow().isoformat() + "Z",
             "version": "1.0.0",
-            "database": {
-                "status": db_status
-            }
+            "environment": os.getenv("ENVIRONMENT", "development"),
+            "database_url": db_url_info  # Masked URL info
         }
     
     @application.options("/health", tags=["Health"])
