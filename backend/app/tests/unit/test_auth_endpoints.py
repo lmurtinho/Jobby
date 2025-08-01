@@ -169,7 +169,7 @@ class TestAuthenticationEndpoints:
         response_data = response.json()
         assert "id" in response_data
         assert "access_token" in response_data
-        assert response_data["email"] == "maria.silva@example.com"
+        assert response_data["email"] == sample_registration_data["email"]
         assert response_data["name"] == "Maria Silva"
         assert response_data["token_type"] == "bearer"
     
@@ -251,7 +251,7 @@ class TestAuthenticationEndpoints:
         assert response.status_code == status.HTTP_200_OK
         
         profile_data = response.json()
-        assert profile_data["email"] == "maria.silva@example.com"
+        assert profile_data["email"] == sample_registration_data["email"]
         assert profile_data["name"] == "Maria Silva"
         assert profile_data["location"] == "São Paulo, Brazil"
         assert profile_data["experience_level"] == "mid"
