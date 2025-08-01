@@ -137,12 +137,14 @@ class TestDeploymentHealth:
         response = client.post("/api/v1/auth/register", json=user_data)
         if response.status_code == 201:
             user_id = response.json()["id"]
+            access_token = response.json()["access_token"]
             
-            # Test resume upload
+            # Test resume upload with authentication
             test_file_content = b"Sample PDF content for testing"
             files = {"resume": ("test_resume.pdf", test_file_content, "application/pdf")}
+            headers = {"Authorization": f"Bearer {access_token}"}
             
-            response = client.post(f"/api/v1/users/{user_id}/resume", files=files)
+            response = client.post(f"/api/v1/users/{user_id}/resume", files=files, headers=headers)
             # Should work or give appropriate validation error
             assert response.status_code in [200, 400, 422]
 
