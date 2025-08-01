@@ -29,7 +29,7 @@ class TestJobFeaturesIntegration:
     def test_job_typescript_interfaces_exist(self):
         """Test that proper TypeScript interfaces are defined for jobs."""
         # Check if job types file exists
-        job_types_file = Path("../frontend/src/types/job.ts")
+        job_types_file = Path("frontend/src/types/job.ts")
         assert job_types_file.exists(), "Job TypeScript interfaces should exist at frontend/src/types/job.ts"
         
         # Read and verify interface content
@@ -70,7 +70,7 @@ class TestJobFeaturesIntegration:
     
     def test_job_matching_algorithm_exists(self):
         """Test that job matching algorithm utility exists."""
-        matching_file = Path("../frontend/src/utils/jobMatching.ts")
+        matching_file = Path("frontend/src/utils/jobMatching.ts")
         assert matching_file.exists(), "Job matching utility should exist at frontend/src/utils/jobMatching.ts"
         
         content = matching_file.read_text()
@@ -87,7 +87,7 @@ class TestJobFeaturesIntegration:
     
     def test_job_card_component_exists(self):
         """Test that JobCard component exists and is properly structured."""
-        job_card_file = Path("../frontend/src/components/JobCard.tsx")
+        job_card_file = Path("frontend/src/components/JobCard.tsx")
         assert job_card_file.exists(), "JobCard component should exist at frontend/src/components/JobCard.tsx"
         
         content = job_card_file.read_text()
@@ -112,7 +112,7 @@ class TestJobFeaturesIntegration:
     
     def test_job_search_functionality_exists(self):
         """Test that job search and filtering functionality exists."""
-        search_file = Path("../frontend/src/components/JobSearch.tsx")
+        search_file = Path("frontend/src/components/JobSearch.tsx")
         assert search_file.exists(), "JobSearch component should exist at frontend/src/components/JobSearch.tsx"
         
         content = search_file.read_text()
