@@ -14,7 +14,11 @@ from typing import Dict, Any, AsyncGenerator
 from app.core.database import create_tables
 from app.routers import auth, users, jobs, config
 
-
+@app.on_event("startup")
+async def create_tables():
+    from app.core.database import create_tables
+    create_tables()
+    
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
