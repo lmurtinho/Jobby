@@ -1,22 +1,20 @@
-# AI Job Tracker - Backend Requirements
-# Python 3.11+ required
-# Install with: pip install -r requirements.txt
+# AI Job Tracker - Production Requirements
+# Optimized for Railway deployment - only essential packages
 
 # ================================
 # CORE FRAMEWORK
 # ================================
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
-gunicorn>=21.2.0  # Production WSGI server
-python-multipart>=0.0.6  # For file uploads
+gunicorn>=21.2.0
+python-multipart>=0.0.6
 
 # ================================
 # DATABASE & ORM
 # ================================
 sqlalchemy>=2.0.0
 alembic>=1.12.0
-psycopg2-binary>=2.9.7  # PostgreSQL adapter
-asyncpg>=0.29.0  # Async PostgreSQL adapter
+psycopg2-binary>=2.9.7
 
 # ================================
 # AUTHENTICATION & SECURITY
@@ -24,60 +22,19 @@ asyncpg>=0.29.0  # Async PostgreSQL adapter
 fastapi-users[sqlalchemy]>=12.1.0
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4
-python-multipart>=0.0.6
 
 # ================================
 # TASK QUEUE & BACKGROUND JOBS
 # ================================
 celery>=5.3.0
 redis>=5.0.0
-flower>=2.0.1  # Celery monitoring
 
 # ================================
-# AI & MACHINE LEARNING
+# AI & BASIC ML (Essential only)
 # ================================
-anthropic>=0.25.0  # Claude API
-openai>=1.3.0  # Optional: For embeddings/fallback
-scikit-learn>=1.3.0
-spacy>=3.7.0
-nltk>=3.8.1
-transformers>=4.35.0  # For additional NLP models
-torch>=2.1.0  # PyTorch for ML models
-sentence-transformers>=2.2.2  # For semantic similarity
-
-# ================================
-# DATA PROCESSING & ANALYTICS
-# ================================
-pandas>=2.1.0
-numpy>=1.25.0
-matplotlib>=3.8.0
-seaborn>=0.13.0
-plotly>=5.17.0
-
-# ================================
-# WEB SCRAPING & DATA COLLECTION
-# ================================
-scrapy>=2.11.0
-beautifulsoup4>=4.12.0
-selenium>=4.15.0
+anthropic>=0.25.0
 requests>=2.31.0
-aiohttp>=3.9.0  # Async HTTP client
-feedparser>=6.0.10  # RSS feed parsing
-lxml>=4.9.3  # XML/HTML parsing
-
-# ================================
-# FILE PROCESSING
-# ================================
-PyPDF2>=3.0.1  # PDF text extraction
-python-docx>=1.1.0  # Word document processing
-openpyxl>=3.1.2  # Excel file processing
-Pillow>=10.1.0  # Image processing
-
-# ================================
-# EMAIL & NOTIFICATIONS
-# ================================
-sendgrid>=6.10.0
-jinja2>=3.1.2  # Email template rendering
+aiohttp>=3.9.0
 
 # ================================
 # CONFIGURATION & ENVIRONMENT
@@ -87,106 +44,15 @@ pydantic-settings>=2.1.0
 python-dotenv>=1.0.0
 
 # ================================
-# API DOCUMENTATION
-# ================================
-# FastAPI includes Swagger/OpenAPI by default
-
-# ================================
-# VALIDATION & SERIALIZATION
-# ================================
-python-dateutil>=2.8.2
-phonenumbers>=8.13.0  # Phone number validation
-email-validator>=2.1.0
-
-# ================================
 # MONITORING & LOGGING
 # ================================
 sentry-sdk[fastapi]>=1.38.0
-structlog>=23.2.0
-python-json-logger>=2.0.7
-psutil>=5.9.0  # System and process monitoring
-
-# ================================
-# TESTING
-# ================================
-pytest>=7.4.0
-pytest-asyncio>=0.21.0
-pytest-cov>=4.1.0
-httpx>=0.25.0  # For testing FastAPI
-factory-boy>=3.3.0  # Test data generation
-faker>=20.1.0  # Fake data generation
-
-# ================================
-# CODE QUALITY & DEVELOPMENT
-# ================================
-black>=23.11.0
-isort>=5.12.0
-flake8>=6.1.0
-mypy>=1.7.0
-pre-commit>=3.5.0
+psutil>=5.9.0
 
 # ================================
 # UTILITIES
 # ================================
 python-slugify>=8.0.1
-click>=8.1.7  # CLI utilities
-rich>=13.7.0  # Rich console output
-tenacity>=8.2.3  # Retry logic
-schedule>=1.2.0  # Job scheduling
-
-# ================================
-# GEOLOCATION & TIMEZONE
-# ================================
+tenacity>=8.2.3
 pytz>=2023.3
-geopy>=2.4.0
-
-# ================================
-# CACHING
-# ================================
-redis>=5.0.0  # Already included above for Celery
-
-# ================================
-# DATA VALIDATION & CLEANING
-# ================================
-cerberus>=1.3.4  # Data validation
-ftfy>=6.1.1  # Text cleaning
-
-# ================================
-# CONCURRENCY & ASYNC
-# ================================
-asyncio-throttle>=1.0.2
 aiofiles>=23.2.1
-
-# ================================
-# SPECIALIZED ML LIBRARIES
-# ================================
-# For specific ML tasks
-wordcloud>=1.9.2  # Skill visualization
-textblob>=0.17.1  # Simple NLP tasks
-fuzzywuzzy>=0.18.0  # Fuzzy string matching
-python-Levenshtein>=0.23.0  # String distance calculations
-
-# ================================
-# DATABASE UTILITIES
-# ================================
-sqlalchemy-utils>=0.41.1  # Extended SQLAlchemy utilities
-
-# ================================
-# HTTP CLIENT ENHANCEMENTS
-# ================================
-httpx[http2]>=0.25.0
-urllib3>=2.1.0
-
-# ================================
-# OPTIONAL: PRODUCTION UTILITIES
-# ================================
-gunicorn>=21.2.0  # WSGI server (if not using uvicorn)
-supervisor>=4.2.5  # Process management
-
-# ================================
-# DEVELOPMENT DEPENDENCIES
-# ================================
-# These can be moved to requirements-dev.txt if needed
-jupyter>=1.0.0
-ipython>=8.17.0
-notebook>=7.0.0
