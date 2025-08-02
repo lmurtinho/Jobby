@@ -3,7 +3,7 @@ ResumeService - PDF text extraction and skill analysis
 Minimal implementation to make tests importable (TDD red phase)
 """
 
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from typing import Dict, List, Optional
 from io import BytesIO
 import re
