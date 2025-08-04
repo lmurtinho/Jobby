@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import './Register.css';
 
 interface RegisterFormData {
@@ -10,6 +11,7 @@ interface RegisterFormData {
 }
 
 const Register: React.FC = () => {
+  const { register } = useAuth();
   const [formData, setFormData] = useState<RegisterFormData>({
     firstName: '',
     lastName: '',
@@ -53,23 +55,19 @@ const Register: React.FC = () => {
     }
 
     try {
-      // Call the register API
-      await Register({
+      // Call the register API from AuthContext
+      await register({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,
         password: formData.password
       });
       
-      // Placeholder for registration logic
-      // const response = await apiClient.post('/auth/register', {
-      //   firstName: formData.firstName,
-      //   lastName: formData.lastName,
-      //   email: formData.email,
-      //   password: formData.password
-      // });
-      // Handle successful registration (auto-login, redirect, etc.)
-      
+    // Registration successful - you could redirect here
+    console.log('Registration successful!');
+    // Optional: redirect to dashboard or login
+    // window.location.href = '/dashboard';
+    
     } catch (err) {
       setError('Registration failed. Please try again.');
       console.error('Registration error:', err);
