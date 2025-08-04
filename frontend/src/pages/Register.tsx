@@ -57,8 +57,7 @@ const Register: React.FC = () => {
     try {
       // Call the register API from AuthContext
       await register({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
+        name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         password: formData.password
       });

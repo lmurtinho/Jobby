@@ -61,8 +61,7 @@ export const authAPI = {
     apiClient.post('/api/v1/auth/login', credentials),
   
   register: (userData: { 
-    firstName: string; 
-    lastName: string; 
+    name: string; 
     email: string; 
     password: string;
   }) =>
