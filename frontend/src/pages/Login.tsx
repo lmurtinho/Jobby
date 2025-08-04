@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { authAPI, setAuthToken } from '../utils/apiClient';
 import './Login.css';
 
 interface LoginFormData {
@@ -7,6 +9,7 @@ interface LoginFormData {
 }
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: ''
@@ -28,15 +31,18 @@ const Login: React.FC = () => {
     setError(null);
 
     try {
-      // TODO: Implement API call to backend login endpoint
-      console.log('Login attempt:', formData);
+      const response = await authAPI.login(formData);
       
-      // Placeholder for authentication logic
-      // const response = await apiClient.post('/auth/login', formData);
-      // Handle successful login (store token, redirect, etc.)
+      const { access_token, user } = response.data;
       
-    } catch (err) {
-      setError('Login failed. Please check your credentials.');
+      setAuthToken(access_token);
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      navigate('/dashboard');
+      
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.detail || 'Login failed. Please check your credentials.';
+      setError(errorMessage);
       console.error('Login error:', err);
     } finally {
       setIsLoading(false);
