@@ -53,8 +53,8 @@ const Register: React.FC = () => {
     }
 
     try {
-      // TODO: Implement API call to backend register endpoint
-      console.log('Registration attempt:', {
+      // Call the register API
+      await Register({
         firstName: formData.firstName,
         lastName: formData.lastName,
         email: formData.email,

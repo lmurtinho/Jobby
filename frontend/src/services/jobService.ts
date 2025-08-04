@@ -5,7 +5,7 @@ import { Job, JobMatch, JobSearchFilters } from '../types/job';
 import { SAMPLE_JOBS } from '../data/sampleJobs';
 
 // API base URL - will be replaced with actual backend API
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api/v1';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 class JobService {
   private savedJobIds: Set<string> = new Set();
