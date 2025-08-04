@@ -14,6 +14,10 @@ from typing import Dict, Any, AsyncGenerator
 from app.core.database import create_tables
 from app.routers import auth, users, jobs, config
 
+from fastapi import Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """
@@ -65,6 +69,26 @@ def create_application() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+    )
+
+    @application.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        """
+        Custom handler for validation errors to avoid exposing sensitive data.
+        """
+        return JSONResponse(
+            status_code=422,
+            content={
+                "detail": [
+                    {
+                        "type": error["type"],
+                        "loc": error["loc"],
+                        "msg": error["msg"]
+                        # Note: Removed "input" field to avoid exposing passwords
+                    }
+                    for error in exc.errors()
+                ]
+            }
     )
     
     # Include routers
@@ -129,6 +153,8 @@ def create_application() -> FastAPI:
             Dict[str, Any]: Empty response for CORS preflight
         """
         return {}
+    
+
     
     return application
 
