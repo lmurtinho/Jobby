@@ -5,8 +5,7 @@ import { authAPI, setAuthToken, clearAuthToken, getAuthToken } from '../utils/ap
 interface User {
   id: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  name: string; // Changed from firstName/lastName to single name field
   skills?: string[];
   experienceLevel?: string;
   location?: string;
@@ -90,30 +89,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
-    try {
-      setIsLoading(true);
-      setError(null);
+const login = async (email: string, password: string): Promise<void> => {
+  try {
+    setIsLoading(true);
+    setError(null);
 
-      const response = await authAPI.login({ email, password });
-      const { token: newToken, user: userData } = response.data;
+    const response = await authAPI.login({ email, password });
+    // Fix: Use actual field names from backend response
+    const { access_token, id, email: userEmail, name } = response.data;
 
-      // Store auth data
-      setAuthToken(newToken);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      // Update state
-      setTokenState(newToken);
-      setUser(userData);
-      
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    // Store auth data
+    setAuthToken(access_token); // Use access_token instead of token
+    localStorage.setItem('user', JSON.stringify({ id, email: userEmail, name }));
+    
+    // Update state
+    setTokenState(access_token);
+    setUser({ id, email: userEmail, name });
+    
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';
+    setError(errorMessage);
+    throw new Error(errorMessage);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const register = async (userData: RegisterData): Promise<void> => {
     try {
