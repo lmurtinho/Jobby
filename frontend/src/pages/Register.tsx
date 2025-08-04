@@ -11,7 +11,7 @@ interface RegisterFormData {
 }
 
 const Register: React.FC = () => {
-  const { register } = useAuth();
+  const { register, login } = useAuth(); // Add login to destructure
   const [formData, setFormData] = useState<RegisterFormData>({
     firstName: '',
     lastName: '',
@@ -21,6 +21,7 @@ const Register: React.FC = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null); // Add success state
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -48,6 +49,7 @@ const Register: React.FC = () => {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setSuccess(null); // Clear previous success message
 
     if (!validateForm()) {
       setIsLoading(false);
@@ -55,18 +57,24 @@ const Register: React.FC = () => {
     }
 
     try {
-      // Call the register API from AuthContext
+      // 1. Register the user
       await register({
         name: `${formData.firstName} ${formData.lastName}`,
         email: formData.email,
         password: formData.password
       });
       
-    // Registration successful - you could redirect here
-    console.log('Registration successful!');
-    // Optional: redirect to dashboard or login
-    // window.location.href = '/dashboard';
-    
+      // 2. Show success message
+      setSuccess('Account created successfully! Logging you in...');
+      
+      // 3. Auto-login the user
+      await login(formData.email, formData.password);
+      
+      // 4. Redirect to dashboard
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1500);
+      
     } catch (err) {
       setError('Registration failed. Please try again.');
       console.error('Registration error:', err);
@@ -152,6 +160,12 @@ const Register: React.FC = () => {
           {error && (
             <div className="error-message">
               {error}
+            </div>
+          )}
+
+          {success && (
+            <div className="success-message">
+              {success}
             </div>
           )}
 
