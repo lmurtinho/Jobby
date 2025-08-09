@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { authAPI, setAuthToken } from '../utils/apiClient';
 import './Login.css';
 
@@ -9,6 +10,7 @@ interface LoginFormData {
 }
 
 const Login: React.FC = () => {
+  const { login } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
@@ -25,29 +27,26 @@ const Login: React.FC = () => {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setIsLoading(true);
+  setError(null);
 
-    try {
-      const response = await authAPI.login(formData);
-      
-      const { access_token, user } = response.data;
-      
-      setAuthToken(access_token);
-      localStorage.setItem('user', JSON.stringify(user));
-      
-      navigate('/dashboard');
-      
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.detail || 'Login failed. Please check your credentials.';
-      setError(errorMessage);
-      console.error('Login error:', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  try {
+    // Use AuthContext login function instead of direct API call
+    await login(formData.email, formData.password);
+    
+    // console.log('Login successful! Redirecting...');
+    navigate('/dashboard');
+    
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.detail || 'Login failed. Please check your credentials.';
+    setError(errorMessage);
+    console.error('Login error:', err);
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   return (
     <div className="login-container">

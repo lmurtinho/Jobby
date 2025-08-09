@@ -60,31 +60,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Initialize auth state on mount
   useEffect(() => {
-    const initializeAuth = async () => {
-      try {
-        const storedToken = getAuthToken();
-        const storedUser = localStorage.getItem('user');
-
-        if (storedToken && storedUser) {
-          setTokenState(storedToken);
-          setUser(JSON.parse(storedUser));
-          
-          // Verify token is still valid by fetching profile
-          try {
-            const response = await authAPI.getProfile();
-            setUser(response.data);
-          } catch (error) {
-            // Token is invalid, clear auth state
-            logout();
-          }
-        }
-      } catch (error) {
-        console.error('Error initializing auth:', error);
-        logout();
-      } finally {
-        setIsLoading(false);
-      }
-    };
+const initializeAuth = async () => {
+  try {
+    
+    const storedToken = localStorage.getItem('authToken');
+    const userStr = localStorage.getItem('user');
+    
+    //   token: !!storedToken, 
+    //   userStr: !!userStr,
+    //   tokenValue: storedToken,
+    //   userValue: userStr 
+    // });
+    
+    if (storedToken && storedToken !== 'undefined' && userStr && userStr !== 'undefined') {
+      const userData = JSON.parse(userStr);      
+      setTokenState(storedToken);
+      setUser(userData);
+      // isAuthenticated will automatically become true because of: !!token && !!user
+    } else {
+      console.log('❌ No valid session found');
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    }
+  } catch (error) {
+    console.error('💥 Auth initialization error:', error);
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+  } finally {
+    setIsLoading(false); // Important: Set loading to false after initialization
+  }
+}; 
 
     initializeAuth();
   }, []);
@@ -95,16 +100,25 @@ const login = async (email: string, password: string): Promise<void> => {
     setError(null);
 
     const response = await authAPI.login({ email, password });
-    // Fix: Use actual field names from backend response
     const { access_token, id, email: userEmail, name } = response.data;
 
     // Store auth data
-    setAuthToken(access_token); // Use access_token instead of token
-    localStorage.setItem('user', JSON.stringify({ id, email: userEmail, name }));
+    setAuthToken(access_token);
+    
+    const userData = {
+      id: id.toString(),
+      email: userEmail,
+      name,
+      skills: [],
+      experienceLevel: undefined,
+      location: undefined
+    };
+    
+    localStorage.setItem('user', JSON.stringify(userData));
     
     // Update state
     setTokenState(access_token);
-    setUser({ id, email: userEmail, name });
+    setUser(userData);
     
   } catch (error: any) {
     const errorMessage = error.response?.data?.message || 'Login failed. Please check your credentials.';

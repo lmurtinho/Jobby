@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Job, JobSearchFilters } from '../types/job';
 import { calculateJobMatch, getMatchedJobs, calculateMatchScore } from '../utils/jobMatching';
 import JobCard from '../components/JobCard';
 import JobSearch from '../components/JobSearch';
 import jobService from '../services/jobService';
+import { useAuth } from '../contexts/AuthContext';
 
 const JobDashboard: React.FC = () => {
+  const { user, isAuthenticated, token } = useAuth();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,29 +20,28 @@ const JobDashboard: React.FC = () => {
     companiesCount: 0,
     averageSalary: undefined as number | undefined
   });
-
   // Mock user skills - in production, this would come from user context/auth
   const userSkills = ['Python', 'React', 'TypeScript', 'SQL', 'AWS'];
 
-  useEffect(() => {
-    loadJobs();
-    loadSavedJobs();
-    loadStats();
-  }, []);
+  // useEffect(() => {
+  //   loadJobs();
+  //   loadSavedJobs();
+  //   loadStats();
+  // }, []);
 
   const loadJobs = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const jobsData = await jobService.getJobs();
-      setJobs(jobsData);
-      setFilteredJobs(jobsData);
-    } catch (err) {
-      console.error('Error loading jobs:', err);
-      setError('Failed to load jobs. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    // try {
+    //   setLoading(true);
+    //   setError(null);
+    //   const jobsData = await jobService.getJobs();
+    //   setJobs(jobsData);
+    //   setFilteredJobs(jobsData);
+    // } catch (err) {
+    //   console.error('Error loading jobs:', err);
+    //   setError('Failed to load jobs. Please try again.');
+    // } finally {
+    //   setLoading(false);
+    // }
   };
 
   const loadSavedJobs = async () => {
@@ -67,7 +68,7 @@ const JobDashboard: React.FC = () => {
     }
   };
 
-  const handleFiltersChange = async (newFilters: JobSearchFilters) => {
+  const handleFiltersChange = useCallback(async (newFilters: JobSearchFilters) => {
     setFilters(newFilters);
     
     try {
@@ -80,7 +81,7 @@ const JobDashboard: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const handleSaveJob = async (jobId: string) => {
     try {
@@ -103,21 +104,24 @@ const JobDashboard: React.FC = () => {
   };
 
   const handleApplyJob = (job: Job) => {
-    // Track application (analytics)
-    console.log('User applied to job:', job.title, job.company);
-    
     // Open application URL
     window.open(job.apply_url, '_blank');
   };
 
   // Calculate matched jobs with score
-  const jobsWithMatches = getMatchedJobs(filteredJobs, userSkills);
+  const jobsWithMatches = useMemo(() => {
+    return getMatchedJobs(filteredJobs, userSkills);
+  }, [filteredJobs, userSkills]);
 
-  // Statistics calculations
-  const highMatchJobs = jobsWithMatches.filter(job => job.matchData.match_score >= 70);
-  const averageMatchScore = jobsWithMatches.length > 0
+  const highMatchJobs = useMemo(() => {
+    return jobsWithMatches.filter(job => job.matchData.match_score >= 70);
+  }, [jobsWithMatches]);
+
+  const averageMatchScore = useMemo(() => {
+    return jobsWithMatches.length > 0
     ? Math.round(jobsWithMatches.reduce((sum, job) => sum + job.matchData.match_score, 0) / jobsWithMatches.length)
     : 0;
+  }, [jobsWithMatches]);
 
   if (error) {
     return (
@@ -136,7 +140,6 @@ const JobDashboard: React.FC = () => {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -297,5 +300,28 @@ const JobDashboard: React.FC = () => {
     </div>
   );
 };
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       {/* Header */}
+//       <div className="bg-white shadow-sm border-b border-gray-200">
+//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+//           <div className="flex justify-between items-center">
+//             <div>
+//               <h1 className="text-3xl font-bold text-gray-900">Job Dashboard</h1>
+//               <p className="text-gray-600 mt-1">
+//                 Find your next opportunity with AI-powered job matching
+//               </p>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+//         <p>Testing step by step - no blinking so far!</p>
+//       </div>
+//     </div>
+//   );
+// };
+
 
 export default JobDashboard;
